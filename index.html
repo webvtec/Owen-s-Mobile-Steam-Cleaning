@@ -99,7 +99,7 @@ body > *:not(.sidebar-scrim):not(.sidebar-panel):not(#sidebarPanel) {
 .header-bar {
   position: fixed;
   top: 0; left: 0; right: 0;
-  height: 64px;
+  height: 48px;
   background: rgba(13,31,34,0.97);
   box-shadow: 0 1px 0 rgba(10,191,188,0.15), 0 4px 32px rgba(0,0,0,0.4);
   backdrop-filter: blur(20px);
@@ -111,18 +111,15 @@ body > *:not(.sidebar-scrim):not(.sidebar-panel):not(#sidebarPanel) {
   border-bottom: 1px solid var(--border);
 }
 
-.header-bar::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent 0%, var(--teal) 25%, var(--sand) 50%, var(--teal) 75%, transparent 100%);
-  background-size: 300% 100%;
-  animation: stripeFlow 5s linear infinite;
-}
-@keyframes stripeFlow {
-  0%   { background-position: 200% center; }
-  100% { background-position: -100% center; }
+/* header bottom line removed — handled by perimeter canvas */
+
+/* ========================= PERIMETER FLOW ========================= */
+#perimeterCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1001;
 }
 
 .header-title {
@@ -132,11 +129,12 @@ body > *:not(.sidebar-scrim):not(.sidebar-panel):not(#sidebarPanel) {
   letter-spacing: 5px;
   text-transform: uppercase;
   color: #FFFFFF;
-  text-align: center;
+  text-align: left;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding-left: 56px;
+  position: absolute;
+  left: 62px;
 }
 .header-title .brand-accent { color: var(--teal); }
 
@@ -173,7 +171,7 @@ body > *:not(.sidebar-scrim):not(.sidebar-panel):not(#sidebarPanel) {
 /* ========================= HAMBURGER ========================= */
 .hamburger-btn {
   position: fixed;
-  top: 14px;
+  top: 5px;
   left: 14px;
   z-index: 1100;
   background: transparent;
@@ -218,7 +216,7 @@ body > *:not(.sidebar-scrim):not(.sidebar-panel):not(#sidebarPanel) {
   transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
   display: flex;
   flex-direction: column;
-  padding: 72px 0 24px;
+  padding: 58px 0 24px;
 }
 .sidebar-panel.open { transform: translateX(0); }
 
@@ -321,7 +319,7 @@ body > *:not(.sidebar-scrim):not(.sidebar-panel):not(#sidebarPanel) {
   backdrop-filter: blur(8px);
   z-index: 9000;
   align-items: flex-start; justify-content: flex-end;
-  padding-top: 64px; padding-right: 12px;
+  padding-top: 48px; padding-right: 12px;
 }
 .profile-modal-overlay.show { display: flex; }
 .profile-modal {
@@ -379,8 +377,8 @@ body > *:not(.sidebar-scrim):not(.sidebar-panel):not(#sidebarPanel) {
 /* ========================= CONTENT ========================= */
 .content-section {
   display: none;
-  padding-top: 64px;
-  min-height: calc(100vh - 64px);
+  padding-top: 48px;
+  min-height: calc(100vh - 48px);
   position: relative; z-index: 1;
   background: transparent;
 }
@@ -416,7 +414,7 @@ h1 span.accent-coral { color: var(--coral); text-shadow: 0 0 40px rgba(255,107,1
 
 /* ========================= HERO / LANDING ========================= */
 .hero-section {
-  min-height: calc(100vh - 64px);
+  min-height: calc(100vh - 48px);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   padding: 40px 20px 80px;
@@ -543,7 +541,7 @@ h1 span.accent-coral { color: var(--coral); text-shadow: 0 0 40px rgba(255,107,1
 }
 
 /* ========================= GALLERY ========================= */
-#gallerySection { padding-top: 64px; }
+#gallerySection { padding-top: 48px; }
 
 /* Section label above gallery */
 .gallery-section-label {
@@ -1081,28 +1079,37 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
     <span class="brand-accent">Steam</span>
     <span>Cleaning</span>
   </div>
-  <div class="header-icons">
-    <a class="header-icon-btn" href="https://maps.google.com/?q=Deans+Valley+Waterworks+Savannah+La+Mar+Westmoreland+Jamaica" target="_blank" aria-label="Location">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 24 28" fill="none">
-        <path d="M12 1C6.5 1 2 5.5 2 11c0 7.5 10 16 10 16s10-8.5 10-16c0-5.5-4.5-10-10-10z" stroke="currentColor" stroke-width="1.7" fill="none"/>
-        <circle cx="12" cy="11" r="3.2" stroke="currentColor" stroke-width="1.7" fill="none"/>
-      </svg>
-    </a>
-    <button class="header-icon-btn" id="headerProfileBtn" onclick="toggleProfileModal()" aria-label="Profile">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-        <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-      </svg>
-    </button>
-  </div>
+
 </header>
 
-<!-- ========== SIDEBAR ========== -->
+<!-- Perimeter flow canvas -->
+<canvas id="perimeterCanvas"></canvas>
+
 <div class="sidebar-scrim" id="sidebarScrim" onclick="closeSidebar()"></div>
 <nav class="sidebar-panel" id="sidebarPanel">
-  <div class="sidebar-logo">
-    <div class="logo-name">Owen's Steam Cleaning</div>
-    <div class="logo-sub">Mobile · Westmoreland, JA</div>
-  </div>
+
+  <!-- Profile avatar at top -->
+  <button id="headerProfileBtn" onclick="toggleProfileModal(); closeSidebar();" style="
+    background: transparent; border: none; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    padding: 0 20px 20px; width: 100%;
+    border-bottom: 1px solid var(--border-soft); margin-bottom: 8px;
+  ">
+    <div id="sidebarAvatarWrap" style="
+      width: 60px; height: 60px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--teal), var(--coral));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      border: 2px solid rgba(10,191,188,0.4);
+      overflow: hidden; flex-shrink: 0;
+    ">
+      <span id="sidebarAvatarIcon">👤</span>
+    </div>
+    <div style="text-align:center;">
+      <div id="sidebarUserName" style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--text); line-height:1.2;">Guest</div>
+      <div id="sidebarUserSub" style="font-size:10px; color:var(--text-dim); letter-spacing:1px; margin-top:2px;">Tap to sign in</div>
+    </div>
+  </button>
 
   <button class="sidebar-nav-item active" id="nav-gallery" onclick="showSection('gallerySection')">
     <span class="sn-icon">🫧</span> Gallery
@@ -1116,13 +1123,27 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
   <button class="sidebar-nav-item" id="nav-reviews" onclick="showSection('reviewsSection')">
     <span class="sn-icon">★</span> Reviews
   </button>
+  <a class="sidebar-nav-item" href="https://maps.google.com/?q=Deans+Valley+Waterworks+Savannah+La+Mar+Westmoreland+Jamaica" target="_blank" style="text-decoration:none;">
+    <span class="sn-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 28" fill="none">
+        <path d="M12 1C6.5 1 2 5.5 2 11c0 7.5 10 16 10 16s10-8.5 10-16c0-5.5-4.5-10-10-10z" stroke="currentColor" stroke-width="1.7" fill="none"/>
+        <circle cx="12" cy="11" r="3.2" stroke="currentColor" stroke-width="1.7" fill="none"/>
+      </svg>
+    </span> Location
+  </a>
 
   <div class="sidebar-bottom">
-    <div class="sidebar-social-row">
-      <a class="sidebar-social-btn" href="https://maps.google.com/?q=Deans+Valley+Waterworks+Savannah+La+Mar+Westmoreland+Jamaica" target="_blank" aria-label="Location">
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 28" fill="none">
-          <path d="M12 1C6.5 1 2 5.5 2 11c0 7.5 10 16 10 16s10-8.5 10-16c0-5.5-4.5-10-10-10z" stroke="currentColor" stroke-width="1.7" fill="none"/>
-          <circle cx="12" cy="11" r="3.2" stroke="currentColor" stroke-width="1.7" fill="none"/>
+    <div class="sidebar-social-row" style="gap:12px;">
+      <!-- Instagram -->
+      <a class="sidebar-social-btn" href="https://www.instagram.com/owenssteamcleaning" target="_blank" aria-label="Instagram" title="Follow on Instagram" style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);border:none;color:#fff;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+        </svg>
+      </a>
+      <!-- TikTok -->
+      <a class="sidebar-social-btn" href="https://www.tiktok.com/@owenssteamcleaning" target="_blank" aria-label="TikTok" title="Follow on TikTok" style="width:40px;height:40px;border-radius:10px;background:#010101;border:1px solid rgba(255,255,255,0.15);color:#fff;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/>
         </svg>
       </a>
     </div>
@@ -1739,14 +1760,23 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
     const profileUserName = document.getElementById('profileUserName');
     const profileUserEmail = document.getElementById('profileUserEmail');
     const profileAvatarIcon = document.getElementById('profileAvatarIcon');
+    const sidebarAvatarIcon = document.getElementById('sidebarAvatarIcon');
+    const sidebarUserName = document.getElementById('sidebarUserName');
+    const sidebarUserSub = document.getElementById('sidebarUserSub');
     if (user) {
       if (authBtn) authBtn.classList.add('logged-in');
       if (authLabel) authLabel.textContent = 'Log Out';
       if (authIcon) authIcon.textContent = '🚪';
       if (profileUserName) profileUserName.textContent = user.displayName || 'User';
       if (profileUserEmail) profileUserEmail.textContent = user.email || '';
+      if (sidebarUserName) sidebarUserName.textContent = user.displayName || 'User';
+      if (sidebarUserSub) sidebarUserSub.textContent = user.email || 'Signed in';
       if (user.photoURL) {
-        if (profileAvatarIcon) profileAvatarIcon.innerHTML = `<img src="${user.photoURL}" alt="avatar">`;
+        const imgTag = `<img src="${user.photoURL}" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+        if (profileAvatarIcon) profileAvatarIcon.innerHTML = imgTag;
+        if (sidebarAvatarIcon) sidebarAvatarIcon.innerHTML = imgTag;
+      } else {
+        if (sidebarAvatarIcon) sidebarAvatarIcon.textContent = '👤';
       }
     } else {
       if (authBtn) authBtn.classList.remove('logged-in');
@@ -1755,6 +1785,9 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
       if (profileUserName) profileUserName.textContent = 'Guest';
       if (profileUserEmail) profileUserEmail.textContent = 'Sign in to book';
       if (profileAvatarIcon) profileAvatarIcon.textContent = '👤';
+      if (sidebarAvatarIcon) sidebarAvatarIcon.textContent = '👤';
+      if (sidebarUserName) sidebarUserName.textContent = 'Guest';
+      if (sidebarUserSub) sidebarUserSub.textContent = 'Tap to sign in';
     }
   }
 
@@ -2254,6 +2287,105 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
     document.getElementById('pcs-home').classList.toggle('active', type === 'home');
     document.getElementById('pcs-car').classList.toggle('active', type === 'car');
   }
+</script>
+
+
+<script>
+// ========== PERIMETER FLOW ==========
+(function() {
+  const canvas = document.getElementById('perimeterCanvas');
+  const ctx = canvas.getContext('2d');
+
+  const HEADER_H = 48;   // must match CSS header height
+  const SLUG_LEN = 280;
+  const SPEED    = 200;
+  const LINE_W   = 2;
+
+  let W, H, perimeter, offset = 0, last = null;
+
+  function resize() {
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width  = W;
+    canvas.height = H;
+    // Path: top-left → top-right (along top of screen) → down right → along bottom → up left → back to start
+    perimeter = W + H + W + H;
+  }
+
+  // Returns {x, y} for a distance d along the perimeter
+  // Starting point: top-left corner at (0, HEADER_H)
+  // Direction: right → down → left → up
+  function pointOnPerimeter(d) {
+    d = ((d % perimeter) + perimeter) % perimeter;
+
+    // Segment 1: top — left to right at y = 0
+    if (d <= W) return { x: d, y: 0 };
+    d -= W;
+
+    // Segment 2: right side — top to bottom at x = W
+    if (d <= H) return { x: W, y: d };
+    d -= H;
+
+    // Segment 3: bottom — right to left at y = H
+    if (d <= W) return { x: W - d, y: H };
+    d -= W;
+
+    // Segment 4: left side — bottom to top at x = 0
+    return { x: 0, y: H - d };
+  }
+
+  function draw(ts) {
+    if (!last) last = ts;
+    const dt = Math.min((ts - last) / 1000, 0.05);
+    last = ts;
+    offset = (offset + SPEED * dt) % perimeter;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Faint static track: right side, bottom, left side only
+    // (top is already the header bottom border — don't double-draw)
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(W, 0);
+    ctx.lineTo(W, H);
+    ctx.lineTo(0, H);
+    ctx.lineTo(0, 0);
+    ctx.strokeStyle = 'rgba(10,191,188,0.07)';
+    ctx.lineWidth = LINE_W;
+    ctx.stroke();
+
+    // Glowing slug — drawn segment by segment so each bit has its own opacity/glow
+    const steps = 100;
+    const stepSize = SLUG_LEN / steps;
+
+    for (let i = 1; i <= steps; i++) {
+      const t = i / steps;                              // 0 = tail, 1 = head
+      const alpha = Math.sin(t * Math.PI);              // bell curve: dim at ends, bright in middle
+
+      const p0 = pointOnPerimeter(offset - SLUG_LEN + (i - 1) * stepSize);
+      const p1 = pointOnPerimeter(offset - SLUG_LEN + i * stepSize);
+
+      ctx.beginPath();
+      ctx.moveTo(p0.x, p0.y);
+      ctx.lineTo(p1.x, p1.y);
+
+      // Colour: teal base, white-hot at peak
+      const brightness = Math.round(alpha * 255);
+      ctx.strokeStyle = `rgba(${10 + Math.round(alpha*180)}, ${191 + Math.round(alpha*50)}, ${188 + Math.round(alpha*55)}, ${(0.25 + alpha * 0.75).toFixed(2)})`;
+      ctx.lineWidth   = LINE_W;
+      ctx.shadowColor = 'rgba(10,191,188,0.9)';
+      ctx.shadowBlur  = 6 + alpha * 18;
+      ctx.stroke();
+    }
+
+    ctx.shadowBlur = 0;
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  requestAnimationFrame(draw);
+})();
 </script>
 
 </body>
