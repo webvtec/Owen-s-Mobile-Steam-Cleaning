@@ -545,36 +545,193 @@ h1 span.accent-coral { color: var(--coral); text-shadow: 0 0 40px rgba(255,107,1
 /* ========================= GALLERY ========================= */
 #gallerySection { padding-top: 64px; }
 
-.gallery-category { margin-top: 24px; padding: 0; }
-.gallery-category h3 {
+/* Section label above gallery */
+.gallery-section-label {
+  text-align: center;
+  padding: 32px 20px 4px;
+}
+.gallery-section-label .gl-kicker {
+  font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+  font-size: 10px; letter-spacing: 5px; color: var(--teal);
+  text-transform: uppercase; margin-bottom: 6px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.gallery-section-label .gl-kicker::before,
+.gallery-section-label .gl-kicker::after {
+  content: ''; width: 22px; height: 1px; background: var(--teal); opacity: 0.5;
+}
+.gallery-section-label h2 {
+  font-family: 'Bebas Neue', sans-serif; font-weight: 400;
+  font-size: 38px; letter-spacing: 3px; color: var(--text);
+  text-transform: uppercase; margin: 0 0 4px;
+}
+.gallery-section-label .gl-sub {
+  font-size: 12px; color: var(--text-dim); letter-spacing: 1px;
+  font-family: 'DM Sans', sans-serif; margin-bottom: 0;
+}
+
+/* Category pill tabs */
+.gallery-filter-bar {
+  display: flex; gap: 8px; padding: 16px 16px 4px;
+  overflow-x: auto; scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.gallery-filter-bar::-webkit-scrollbar { display: none; }
+.gf-pill {
+  flex-shrink: 0; padding: 6px 14px;
   font-family: 'Space Grotesk', sans-serif; font-weight: 700;
-  font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
-  color: #E0EDEF; padding: 0 18px; margin: 0 0 14px;
-  display: flex; align-items: center; gap: 10px;
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  border-radius: 50px; border: 1px solid rgba(10,191,188,0.25);
+  color: var(--text-dim); background: transparent;
+  cursor: pointer; transition: all 0.2s ease;
+  white-space: nowrap;
 }
-.gallery-category h3::before {
-  content: ''; width: 4px; height: 16px; background: var(--teal); flex-shrink: 0;
-}
-
-.gallery-grid {
-  display: flex; overflow-x: auto; gap: 8px; padding: 0 18px 16px;
-  scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin; scrollbar-color: var(--teal) transparent;
-}
-.gallery-grid::-webkit-scrollbar { height: 2px; }
-.gallery-grid::-webkit-scrollbar-thumb { background: var(--teal); border-radius: 2px; }
-.gallery-grid > div { flex-shrink: 0; width: 190px; scroll-snap-align: start; position: relative; overflow: hidden; }
-.gallery-grid img {
-  width: 190px; height: 260px; object-fit: cover; display: block;
-  border-radius: 8px; border: 1px solid var(--border-soft);
-  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
-}
-.gallery-grid img:hover {
-  transform: scale(1.04); border-color: var(--teal);
-  box-shadow: 0 0 20px var(--teal-glow), 0 8px 28px rgba(0,0,0,0.5);
+.gf-pill:hover { border-color: var(--teal); color: var(--teal); }
+.gf-pill.active {
+  background: var(--teal); color: #0D1F22;
+  border-color: var(--teal);
+  box-shadow: 0 0 14px var(--teal-glow);
 }
 
-.category-book-wrap { text-align: center; margin: 4px 0 28px; padding: 0 18px; }
+/* Masonry-style gallery grid */
+.gallery-masonry-wrap {
+  padding: 16px 14px 28px;
+  columns: 2; column-gap: 10px;
+}
+@media (min-width: 600px) {
+  .gallery-masonry-wrap { columns: 3; column-gap: 12px; }
+}
+@media (min-width: 900px) {
+  .gallery-masonry-wrap { columns: 4; column-gap: 14px; max-width: 960px; margin: 0 auto; }
+}
+
+.gallery-masonry-item {
+  break-inside: avoid;
+  margin-bottom: 10px;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border-soft);
+  background: var(--surface2);
+  cursor: pointer;
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+  display: block;
+  animation: galleryFadeIn 0.4s ease both;
+}
+@keyframes galleryFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.gallery-masonry-item:hover {
+  transform: translateY(-3px) scale(1.015);
+  border-color: var(--teal);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 18px var(--teal-glow);
+  z-index: 2;
+}
+.gallery-masonry-item img {
+  width: 100%; display: block;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.gallery-masonry-item:hover img { transform: scale(1.04); }
+
+/* Caption overlay on hover */
+.gallery-masonry-caption {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(13,31,34,0.92));
+  padding: 28px 10px 10px;
+  opacity: 0; transition: opacity 0.25s ease;
+}
+.gallery-masonry-item:hover .gallery-masonry-caption { opacity: 1; }
+.gallery-masonry-caption span {
+  font-family: 'Space Grotesk', sans-serif; font-size: 10px;
+  font-weight: 600; letter-spacing: 1px; color: var(--teal);
+  text-transform: uppercase;
+}
+
+/* Category label badge */
+.gallery-masonry-badge {
+  position: absolute; top: 8px; right: 8px;
+  background: rgba(13,31,34,0.82); border: 1px solid rgba(10,191,188,0.3);
+  border-radius: 50px; padding: 3px 8px;
+  font-family: 'Space Grotesk', sans-serif; font-size: 8px;
+  font-weight: 700; letter-spacing: 1.5px; color: var(--teal);
+  text-transform: uppercase; backdrop-filter: blur(6px);
+  pointer-events: none;
+}
+
+/* Lightbox */
+.gallery-lightbox {
+  display: none; position: fixed; inset: 0; z-index: 9900;
+  background: rgba(0,0,0,0.92); backdrop-filter: blur(12px);
+  align-items: center; justify-content: center;
+  padding: 20px;
+  animation: lbFadeIn 0.2s ease;
+}
+@keyframes lbFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.gallery-lightbox.show { display: flex; flex-direction: column; }
+.gallery-lightbox img {
+  max-width: 100%; max-height: 78vh;
+  object-fit: contain; border-radius: 10px;
+  box-shadow: 0 20px 80px rgba(0,0,0,0.8);
+}
+.gallery-lightbox-caption {
+  margin-top: 14px; font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px; letter-spacing: 2px; color: var(--teal);
+  text-transform: uppercase; text-align: center;
+}
+.gallery-lightbox-cat {
+  font-size: 10px; color: var(--text-dim); letter-spacing: 1px;
+  text-align: center; margin-top: 4px; font-family: 'DM Sans', sans-serif;
+}
+.gallery-lb-close {
+  position: fixed; top: 16px; right: 16px;
+  width: 38px; height: 38px; border-radius: 50%;
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+  color: #fff; font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s ease; z-index: 9910;
+}
+.gallery-lb-close:hover { background: var(--coral); border-color: var(--coral); }
+
+/* Nav arrows */
+.gallery-lb-nav {
+  position: fixed; top: 50%; transform: translateY(-50%);
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+  color: #fff; font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s ease; z-index: 9910;
+}
+.gallery-lb-nav:hover { background: var(--teal); border-color: var(--teal); color: #0D1F22; }
+.gallery-lb-prev { left: 10px; }
+.gallery-lb-next { right: 10px; }
+
+/* Empty state */
+.gallery-empty {
+  text-align: center; padding: 60px 24px;
+  font-family: 'DM Sans', sans-serif;
+}
+.gallery-empty .ge-icon { font-size: 48px; margin-bottom: 14px; }
+.gallery-empty p { color: var(--text-dim); font-size: 14px; line-height: 1.7; }
+
+/* Loading shimmer */
+.gallery-shimmer-grid {
+  padding: 16px 14px 28px;
+  columns: 2; column-gap: 10px;
+}
+@media (min-width: 600px) { .gallery-shimmer-grid { columns: 3; } }
+.shimmer-item {
+  break-inside: avoid; margin-bottom: 10px;
+  border-radius: 10px; background: var(--surface2);
+  animation: shimmerPulse 1.5s ease-in-out infinite;
+}
+@keyframes shimmerPulse {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1; }
+}
+
+.category-book-wrap { text-align: center; margin: 4px 0 36px; padding: 0 18px; }
 .book-now-btn {
   display: inline-block; padding: 12px 28px;
   font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 11px;
@@ -967,34 +1124,7 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
 
 <!-- ========== GALLERY / HERO SECTION ========== -->
 <div class="content-section active" id="gallerySection">
-  <!-- Hero Landing -->
-  <div class="hero-section">
-    <div class="hero-badge"><span class="pulse"></span> Mobile Steam Cleaning</div>
-    <div class="hero-title">
-      Owen's<br><span class="teal">Steam</span><br>Cleaning
-    </div>
-    <p class="hero-sub">Deep steam cleaning for your home &amp; vehicle — we come to you.</p>
-    <div class="hero-location-tag">
-      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 28" fill="none">
-        <path d="M12 1C6.5 1 2 5.5 2 11c0 7.5 10 16 10 16s10-8.5 10-16c0-5.5-4.5-10-10-10z" stroke="currentColor" stroke-width="1.7" fill="none"/>
-        <circle cx="12" cy="11" r="3.2" stroke="currentColor" stroke-width="1.7" fill="none"/>
-      </svg>
-      Savannah La Mar, Westmoreland, Jamaica
-    </div>
-    <div class="hero-service-pick">
-      <button class="hero-service-btn home-btn" onclick="showSection('bookingSection'); setBookingType('home')">
-        <span class="btn-icon">🏠</span>
-        Home Cleaning
-      </button>
-      <button class="hero-service-btn car-btn" onclick="showSection('bookingSection'); setBookingType('car')">
-        <span class="btn-icon">🚗</span>
-        Car Cleaning
-      </button>
-    </div>
-    <button class="hero-cta-btn" onclick="showSection('bookingSection')">Book an Appointment</button>
-  </div>
-
-  <!-- Gallery display area -->
+  <!-- Gallery display area — loads from Firestore -->
   <div id="galleryDisplay"></div>
 </div>
 
@@ -1494,6 +1624,16 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
 </div>
 
 <!-- ========== SCRIPTS ========== -->
+<!-- ========== GALLERY LIGHTBOX ========== -->
+<div class="gallery-lightbox" id="galleryLightbox">
+  <button class="gallery-lb-close" onclick="closeLightbox()">✕</button>
+  <button class="gallery-lb-nav gallery-lb-prev" onclick="lbNavigate(-1)">‹</button>
+  <button class="gallery-lb-nav gallery-lb-next" onclick="lbNavigate(1)">›</button>
+  <img id="galleryLbImg" src="" alt="Gallery image">
+  <div class="gallery-lightbox-caption" id="galleryLbCaption"></div>
+  <div class="gallery-lightbox-cat" id="galleryLbCat"></div>
+</div>
+
 <script>
   let currentUser = null;
 
@@ -1796,33 +1936,152 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
   }
 
   // ========== GALLERY ==========
+  let galleryAllItems = [];
+  let galleryCurrentFilter = 'All';
+  let lightboxIndex = 0;
+  let lightboxItems = [];
+
   async function loadGallery() {
     const container = document.getElementById('galleryDisplay');
     if (!container) return;
+
+    // Shimmer loading state
+    const shimmerCount = 6;
+    const heights = [160, 220, 180, 240, 170, 200];
+    let shimHTML = `<div class="gallery-shimmer-grid">`;
+    for (let i = 0; i < shimmerCount; i++) {
+      shimHTML += `<div class="shimmer-item" style="height:${heights[i]}px;"></div>`;
+    }
+    shimHTML += `</div>`;
+    container.innerHTML = shimHTML;
+
     try {
       const snap = await db.collection('gallery').orderBy('order', 'asc').get();
-      if (snap.empty) { container.innerHTML = ''; return; }
-      const groups = {};
-      snap.docs.forEach(d => {
-        const data = d.data();
-        const cat = data.category || 'General';
-        if (!groups[cat]) groups[cat] = [];
-        groups[cat].push(data);
-      });
-      let html = '';
-      for (const [cat, items] of Object.entries(groups)) {
-        html += `<div class="gallery-category"><h3>${cat}</h3><div class="gallery-wrapper"><div class="gallery-grid">`;
-        items.forEach(item => {
-          html += `<div><img src="${item.url}" alt="${item.caption||''}" loading="lazy" onerror="this.parentElement.style.display='none'"><div style="padding:6px 0; font-size:11px; color:var(--text-dim); font-family:'Space Grotesk',sans-serif; letter-spacing:0.5px;">${item.caption||''}</div></div>`;
-        });
-        html += '</div></div></div>';
+
+      if (snap.empty) {
+        container.innerHTML = `
+          <div class="gallery-section-label" style="padding-top:48px;">
+            <div class="gl-kicker">Owen's Steam Cleaning</div>
+            <h2>Our <span style="color:var(--teal)">Work</span></h2>
+            <p class="gl-sub" style="margin-bottom:20px;">Savannah La Mar, Westmoreland, Jamaica</p>
+          </div>
+          <div class="gallery-empty">
+            <div class="ge-icon">🫧</div>
+            <p>Gallery photos coming soon.<br>Be the first to book a clean!</p>
+            <button class="book-now-btn book-now-btn--primary" style="margin-top:20px;" onclick="showSection('bookingSection')">Book an Appointment →</button>
+          </div>`;
+        return;
       }
-      html += `<div class="category-book-wrap"><button class="book-now-btn book-now-btn--primary" onclick="showSection('bookingSection')">Book an Appointment →</button></div>`;
-      container.innerHTML = html;
+
+      galleryAllItems = snap.docs.map(d => d.data());
+
+      // Build unique category list
+      const cats = ['All', ...new Set(galleryAllItems.map(i => i.category || 'General'))];
+
+      renderGallery(container, cats, galleryAllItems, 'All');
     } catch(e) {
-      container.innerHTML = `<div style="text-align:center; padding:40px 20px; color:var(--text-dim); font-family:'DM Sans',sans-serif; font-size:14px;">Gallery coming soon — check back shortly!</div>`;
+      container.innerHTML = `
+        <div class="gallery-empty">
+          <div class="ge-icon">🫧</div>
+          <p>Gallery coming soon — check back shortly!</p>
+        </div>`;
     }
   }
+
+  function renderGallery(container, cats, allItems, activeFilter) {
+    galleryCurrentFilter = activeFilter;
+    const filtered = activeFilter === 'All' ? allItems : allItems.filter(i => (i.category || 'General') === activeFilter);
+    lightboxItems = filtered;
+
+    // Build filter pills
+    let pillsHTML = `<div class="gallery-filter-bar">`;
+    cats.forEach(cat => {
+      pillsHTML += `<button class="gf-pill ${cat === activeFilter ? 'active' : ''}" onclick="filterGallery('${cat}')">${cat}</button>`;
+    });
+    pillsHTML += `</div>`;
+
+    // Build masonry grid
+    let gridHTML = `<div class="gallery-masonry-wrap" id="galleryMasonryGrid">`;
+    filtered.forEach((item, idx) => {
+      const cap = item.caption || '';
+      const cat = item.category || 'General';
+      gridHTML += `
+        <div class="gallery-masonry-item" onclick="openLightbox(${idx})" style="animation-delay:${Math.min(idx * 0.05, 0.4)}s">
+          <img src="${item.url}" alt="${cap}" loading="lazy" onerror="this.closest('.gallery-masonry-item').style.display='none'">
+          <div class="gallery-masonry-badge">${cat}</div>
+          ${cap ? `<div class="gallery-masonry-caption"><span>${cap}</span></div>` : ''}
+        </div>`;
+    });
+    gridHTML += `</div>`;
+
+    const ctaHTML = `<div class="category-book-wrap"><button class="book-now-btn book-now-btn--primary" onclick="showSection('bookingSection')">Book an Appointment →</button></div>`;
+
+    container.innerHTML = `
+      <div class="gallery-section-label">
+        <div class="gl-kicker">Owen's Steam Cleaning</div>
+        <h2>Our <span style="color:var(--teal)">Work</span></h2>
+        <p class="gl-sub">${allItems.length} clean${allItems.length !== 1 ? 's' : ''} · Savannah La Mar, Westmoreland, Jamaica</p>
+      </div>
+      ${pillsHTML}
+      ${gridHTML}
+      ${ctaHTML}`;
+
+    // Store cats for re-filtering
+    container._galleryCats = cats;
+    container._galleryAll = allItems;
+  }
+
+  function filterGallery(cat) {
+    const container = document.getElementById('galleryDisplay');
+    if (!container || !container._galleryCats) return;
+    renderGallery(container, container._galleryCats, container._galleryAll, cat);
+  }
+  window.filterGallery = filterGallery;
+
+  function openLightbox(idx) {
+    lightboxIndex = idx;
+    const item = lightboxItems[idx];
+    if (!item) return;
+    const lb = document.getElementById('galleryLightbox');
+    const lbImg = document.getElementById('galleryLbImg');
+    const lbCap = document.getElementById('galleryLbCaption');
+    const lbCat = document.getElementById('galleryLbCat');
+    lbImg.src = item.url;
+    lbCap.textContent = item.caption || '';
+    lbCat.textContent = item.category || 'General';
+    lb.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  window.openLightbox = openLightbox;
+
+  function closeLightbox() {
+    document.getElementById('galleryLightbox').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+  window.closeLightbox = closeLightbox;
+
+  function lbNavigate(dir) {
+    lightboxIndex = (lightboxIndex + dir + lightboxItems.length) % lightboxItems.length;
+    const item = lightboxItems[lightboxIndex];
+    document.getElementById('galleryLbImg').src = item.url;
+    document.getElementById('galleryLbCaption').textContent = item.caption || '';
+    document.getElementById('galleryLbCat').textContent = item.category || 'General';
+  }
+  window.lbNavigate = lbNavigate;
+
+  // Close lightbox on backdrop click
+  document.getElementById('galleryLightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeLightbox();
+  });
+  // Keyboard nav
+  document.addEventListener('keydown', function(e) {
+    const lb = document.getElementById('galleryLightbox');
+    if (!lb.classList.contains('show')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') lbNavigate(-1);
+    if (e.key === 'ArrowRight') lbNavigate(1);
+  });
+
   loadGallery();
 
   // ========== REVIEWS ==========
