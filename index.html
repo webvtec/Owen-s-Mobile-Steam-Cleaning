@@ -570,52 +570,84 @@ h1 span.accent-coral { color: var(--coral); text-shadow: 0 0 40px rgba(255,107,1
   font-family: 'DM Sans', sans-serif; margin-bottom: 0;
 }
 
-/* Category pill tabs */
-.gallery-filter-bar {
-  display: flex; gap: 8px; padding: 16px 16px 4px;
+/* 2-button view switcher */
+.gallery-switcher {
+  display: flex; gap: 10px; padding: 14px 14px 4px;
+}
+.gsw-btn {
+  flex: 1; padding: 14px 10px;
+  font-family: 'Space Grotesk', sans-serif; font-weight: 800;
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  border-radius: 12px; border: 2px solid;
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  cursor: pointer; background: transparent;
+  transition: all 0.22s ease;
+}
+.gsw-btn .gsw-icon { font-size: 22px; }
+.gsw-btn.home {
+  border-color: rgba(10,191,188,0.3); color: var(--text-dim);
+}
+.gsw-btn.home:hover, .gsw-btn.home.active {
+  border-color: var(--teal); color: var(--teal);
+  background: rgba(10,191,188,0.1);
+  box-shadow: 0 0 18px rgba(10,191,188,0.18);
+}
+.gsw-btn.car {
+  border-color: rgba(255,107,107,0.3); color: var(--text-dim);
+}
+.gsw-btn.car:hover, .gsw-btn.car.active {
+  border-color: var(--coral); color: var(--coral);
+  background: rgba(255,107,107,0.08);
+  box-shadow: 0 0 18px rgba(255,107,107,0.15);
+}
+
+/* Sub-category pills (shown below switcher) */
+.gallery-sub-pills {
+  display: flex; gap: 7px; padding: 10px 14px 4px;
   overflow-x: auto; scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
+  -webkit-overflow-scrolling: touch; flex-wrap: wrap;
 }
-.gallery-filter-bar::-webkit-scrollbar { display: none; }
-.gf-pill {
-  flex-shrink: 0; padding: 6px 14px;
+.gallery-sub-pills::-webkit-scrollbar { display: none; }
+.gsp-pill {
+  flex-shrink: 0; padding: 5px 12px;
   font-family: 'Space Grotesk', sans-serif; font-weight: 700;
-  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-  border-radius: 50px; border: 1px solid rgba(10,191,188,0.25);
+  font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+  border-radius: 50px; border: 1px solid rgba(10,191,188,0.2);
   color: var(--text-dim); background: transparent;
-  cursor: pointer; transition: all 0.2s ease;
-  white-space: nowrap;
+  cursor: pointer; transition: all 0.18s ease; white-space: nowrap;
 }
-.gf-pill:hover { border-color: var(--teal); color: var(--teal); }
-.gf-pill.active {
-  background: var(--teal); color: #0D1F22;
-  border-color: var(--teal);
-  box-shadow: 0 0 14px var(--teal-glow);
+.gsp-pill:hover { border-color: var(--teal); color: var(--teal); }
+.gsp-pill.active {
+  background: var(--teal); color: #0D1F22; border-color: var(--teal);
+}
+.gallery-sub-pills.car-mode .gsp-pill:hover { border-color: var(--coral); color: var(--coral); }
+.gallery-sub-pills.car-mode .gsp-pill.active {
+  background: var(--coral); color: #fff; border-color: var(--coral);
 }
 
 /* Masonry-style gallery grid */
 .gallery-masonry-wrap {
-  padding: 16px 14px 28px;
-  columns: 2; column-gap: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 14px 14px 28px;
 }
 @media (min-width: 600px) {
-  .gallery-masonry-wrap { columns: 3; column-gap: 12px; }
+  .gallery-masonry-wrap { grid-template-columns: repeat(3, 1fr); gap: 12px; }
 }
 @media (min-width: 900px) {
-  .gallery-masonry-wrap { columns: 4; column-gap: 14px; max-width: 960px; margin: 0 auto; }
+  .gallery-masonry-wrap { grid-template-columns: repeat(4, 1fr); gap: 14px; max-width: 960px; margin: 0 auto; }
 }
 
 .gallery-masonry-item {
-  break-inside: avoid;
-  margin-bottom: 10px;
   position: relative;
   border-radius: 10px;
   overflow: hidden;
   border: 1px solid var(--border-soft);
   background: var(--surface2);
   cursor: pointer;
+  aspect-ratio: 4 / 5;
   transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
-  display: block;
   animation: galleryFadeIn 0.4s ease both;
 }
 @keyframes galleryFadeIn {
@@ -629,7 +661,7 @@ h1 span.accent-coral { color: var(--coral); text-shadow: 0 0 40px rgba(255,107,1
   z-index: 2;
 }
 .gallery-masonry-item img {
-  width: 100%; display: block;
+  width: 100%; height: 100%; display: block;
   object-fit: cover;
   transition: transform 0.4s ease;
 }
@@ -717,13 +749,15 @@ h1 span.accent-coral { color: var(--coral); text-shadow: 0 0 40px rgba(255,107,1
 
 /* Loading shimmer */
 .gallery-shimmer-grid {
-  padding: 16px 14px 28px;
-  columns: 2; column-gap: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 14px 14px 28px;
 }
-@media (min-width: 600px) { .gallery-shimmer-grid { columns: 3; } }
+@media (min-width: 600px) { .gallery-shimmer-grid { grid-template-columns: repeat(3, 1fr); } }
 .shimmer-item {
-  break-inside: avoid; margin-bottom: 10px;
   border-radius: 10px; background: var(--surface2);
+  aspect-ratio: 4 / 5;
   animation: shimmerPulse 1.5s ease-in-out infinite;
 }
 @keyframes shimmerPulse {
@@ -1964,7 +1998,6 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
           <div class="gallery-section-label" style="padding-top:48px;">
             <div class="gl-kicker">Owen's Steam Cleaning</div>
             <h2>Our <span style="color:var(--teal)">Work</span></h2>
-            <p class="gl-sub" style="margin-bottom:20px;">Savannah La Mar, Westmoreland, Jamaica</p>
           </div>
           <div class="gallery-empty">
             <div class="ge-icon">🫧</div>
@@ -1982,9 +2015,10 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
       });
 
       // Build unique category list
-      const cats = ['All', ...new Set(galleryAllItems.map(i => i.category || 'General'))];
+      const cats = [...new Set(galleryAllItems.map(i => i.category || 'General'))];
 
-      renderGallery(container, cats, galleryAllItems, 'All');
+      const firstCat = HOME_CATS.find(c => cats.includes(c)) || CAR_CATS.find(c => cats.includes(c)) || cats[0];
+      renderGallery(container, cats, galleryAllItems, firstCat);
     } catch(e) {
       container.innerHTML = `
         <div class="gallery-empty">
@@ -1996,48 +2030,66 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
     }
   }
 
+  const HOME_CATS = ['HOME INTERIOR DETAILING','HOME EXTERIOR DETAILING','MATTRESS DETAILING','CARPET & RUG DETAILING','SOFA & UPHOLSTERY DETAILING'];
+  const CAR_CATS  = ['CAR INTERIOR DETAILING','CAR EXTERIOR DETAILING','CAR FULL DETAIL'];
+
+  function getMode(cat) {
+    return CAR_CATS.includes(cat) ? 'car' : 'home';
+  }
+
   function renderGallery(container, cats, allItems, activeFilter) {
-    galleryCurrentFilter = activeFilter;
-    const filtered = activeFilter === 'All' ? allItems : allItems.filter(i => (i.category || 'General') === activeFilter);
+    const mode = getMode(activeFilter);
+    const modeCats = (mode === 'car' ? CAR_CATS : HOME_CATS).filter(c => cats.includes(c));
+    const safeFilter = cats.includes(activeFilter) ? activeFilter : (modeCats[0] || cats[0]);
+    galleryCurrentFilter = safeFilter;
+
+    const filtered = allItems.filter(i => (i.category || 'General') === safeFilter);
     lightboxItems = filtered;
 
-    // Build filter pills
-    let pillsHTML = `<div class="gallery-filter-bar">`;
-    cats.forEach(cat => {
-      pillsHTML += `<button class="gf-pill ${cat === activeFilter ? 'active' : ''}" onclick="filterGallery('${cat}')">${cat}</button>`;
+    const switcherHTML = `
+      <div class="gallery-switcher">
+        <button class="gsw-btn home ${mode === 'home' ? 'active' : ''}" onclick="switchGalleryMode('home')">
+          <span class="gsw-icon">\u{1F3E0}</span>Home Detailing
+        </button>
+        <button class="gsw-btn car ${mode === 'car' ? 'active' : ''}" onclick="switchGalleryMode('car')">
+          <span class="gsw-icon">\u{1F697}</span>Car Detailing
+        </button>
+      </div>`;
+
+    let subHTML = '<div class="gallery-sub-pills ' + (mode === 'car' ? 'car-mode' : '') + '">';
+    modeCats.forEach(cat => {
+      const label = cat.replace(/ DETAILING$/,'').replace(/^CAR /,'').replace(/^HOME /,'');
+      subHTML += '<button class="gsp-pill ' + (cat === safeFilter ? 'active' : '') + '" onclick="filterGallery(\'' + cat + '\')">' + label + '</button>';
     });
-    pillsHTML += `</div>`;
+    subHTML += '</div>';
 
-    // Build masonry grid
-    let gridHTML = `<div class="gallery-masonry-wrap" id="galleryMasonryGrid">`;
-    filtered.forEach((item, idx) => {
-      const cap = item.caption || '';
-      const cat = item.category || 'General';
-      gridHTML += `
-        <div class="gallery-masonry-item" onclick="openLightbox(${idx})" style="animation-delay:${Math.min(idx * 0.05, 0.4)}s">
-          <img src="${item.url}" alt="${cap}" loading="lazy" onerror="this.closest('.gallery-masonry-item').style.display='none'">
-          <div class="gallery-masonry-badge">${cat}</div>
-          ${cap ? `<div class="gallery-masonry-caption"><span>${cap}</span></div>` : ''}
-        </div>`;
-    });
-    gridHTML += `</div>`;
+    let gridHTML = '<div class="gallery-masonry-wrap" id="galleryMasonryGrid">';
+    if (filtered.length === 0) {
+      gridHTML += '</div><div class="gallery-empty" style="padding:40px 20px;"><div class="ge-icon">\u{1FAE7}</div><p>No photos in this category yet.</p></div>';
+    } else {
+      filtered.forEach((item, idx) => {
+        const cap = item.caption || '';
+        gridHTML += '<div class="gallery-masonry-item" onclick="openLightbox(' + idx + ')" style="animation-delay:' + Math.min(idx * 0.05, 0.4) + 's"><img src="' + item.url + '" alt="' + cap + '" loading="lazy" onerror="this.closest(\'.gallery-masonry-item\').style.display=\'none\'">' + (cap ? '<div class="gallery-masonry-caption"><span>' + cap + '</span></div>' : '') + '</div>';
+      });
+      gridHTML += '</div>';
+    }
 
-    const ctaHTML = `<div class="category-book-wrap"><button class="book-now-btn book-now-btn--primary" onclick="showSection('bookingSection')">Book an Appointment →</button></div>`;
+    const ctaHTML = '<div class="category-book-wrap"><button class="book-now-btn book-now-btn--primary" onclick="showSection(\'bookingSection\')">Book an Appointment \u2192</button></div>';
 
-    container.innerHTML = `
-      <div class="gallery-section-label">
-        <div class="gl-kicker">Owen's Steam Cleaning</div>
-        <h2>Our <span style="color:var(--teal)">Work</span></h2>
-        <p class="gl-sub">${allItems.length} clean${allItems.length !== 1 ? 's' : ''} · Savannah La Mar, Westmoreland, Jamaica</p>
-      </div>
-      ${pillsHTML}
-      ${gridHTML}
-      ${ctaHTML}`;
+    container.innerHTML = '<div class="gallery-section-label"><div class="gl-kicker">Owen's Steam Cleaning</div><h2>Our <span style="color:var(--teal)">Work</span></h2></div>' + switcherHTML + subHTML + gridHTML + ctaHTML;
 
-    // Store cats for re-filtering
     container._galleryCats = cats;
-    container._galleryAll = allItems;
+    container._galleryAll  = allItems;
   }
+
+  function switchGalleryMode(mode) {
+    const container = document.getElementById('galleryDisplay');
+    if (!container || !container._galleryCats) return;
+    const pool = mode === 'car' ? CAR_CATS : HOME_CATS;
+    const first = pool.find(c => container._galleryCats.includes(c)) || container._galleryCats[0];
+    renderGallery(container, container._galleryCats, container._galleryAll, first);
+  }
+  window.switchGalleryMode = switchGalleryMode;
 
   function filterGallery(cat) {
     const container = document.getElementById('galleryDisplay');
@@ -2045,6 +2097,7 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
     renderGallery(container, container._galleryCats, container._galleryAll, cat);
   }
   window.filterGallery = filterGallery;
+
 
   function openLightbox(idx) {
     lightboxIndex = idx;

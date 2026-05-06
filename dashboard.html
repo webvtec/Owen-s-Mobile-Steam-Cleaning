@@ -424,13 +424,21 @@
 
       <label for="photoCategorySelect">Select Category</label>
       <select id="photoCategorySelect">
-        <option value="HOME CLEANING">HOME CLEANING</option>
-        <option value="MATTRESS CLEANING">MATTRESS CLEANING</option>
-        <option value="CARPET & RUGS">CARPET &amp; RUGS</option>
-        <option value="SOFA & UPHOLSTERY">SOFA &amp; UPHOLSTERY</option>
-        <option value="CAR INTERIOR">CAR INTERIOR</option>
-        <option value="CAR EXTERIOR">CAR EXTERIOR</option>
-        <option value="BEFORE & AFTER">BEFORE &amp; AFTER</option>
+        <optgroup label="🏠 Home Detailing">
+          <option value="HOME INTERIOR DETAILING">HOME INTERIOR DETAILING</option>
+          <option value="HOME EXTERIOR DETAILING">HOME EXTERIOR DETAILING</option>
+          <option value="MATTRESS DETAILING">MATTRESS DETAILING</option>
+          <option value="CARPET & RUG DETAILING">CARPET &amp; RUG DETAILING</option>
+          <option value="SOFA & UPHOLSTERY DETAILING">SOFA &amp; UPHOLSTERY DETAILING</option>
+        </optgroup>
+        <optgroup label="🚗 Car Detailing">
+          <option value="CAR INTERIOR DETAILING">CAR INTERIOR DETAILING</option>
+          <option value="CAR EXTERIOR DETAILING">CAR EXTERIOR DETAILING</option>
+          <option value="CAR FULL DETAIL">CAR FULL DETAIL</option>
+        </optgroup>
+        <optgroup label="✨ Other">
+          <option value="BEFORE & AFTER">BEFORE &amp; AFTER</option>
+        </optgroup>
       </select>
 
       <button onclick="uploadPhotos()" id="uploadBtn">Add Photos</button>
