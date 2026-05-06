@@ -2049,10 +2049,10 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
     const switcherHTML = `
       <div class="gallery-switcher">
         <button class="gsw-btn home ${mode === 'home' ? 'active' : ''}" onclick="switchGalleryMode('home')">
-          <span class="gsw-icon">\u{1F3E0}</span>Home Detailing
+          <span class="gsw-icon">🏠</span>Home Detailing
         </button>
         <button class="gsw-btn car ${mode === 'car' ? 'active' : ''}" onclick="switchGalleryMode('car')">
-          <span class="gsw-icon">\u{1F697}</span>Car Detailing
+          <span class="gsw-icon">🚗</span>Car Detailing
         </button>
       </div>`;
 
@@ -2065,7 +2065,7 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
 
     let gridHTML = '<div class="gallery-masonry-wrap" id="galleryMasonryGrid">';
     if (filtered.length === 0) {
-      gridHTML += '</div><div class="gallery-empty" style="padding:40px 20px;"><div class="ge-icon">\u{1FAE7}</div><p>No photos in this category yet.</p></div>';
+      gridHTML += '</div><div class="gallery-empty" style="padding:40px 20px;"><div class="ge-icon">🫧</div><p>No photos in this category yet.</p></div>';
     } else {
       filtered.forEach((item, idx) => {
         const cap = item.caption || '';
@@ -2074,7 +2074,7 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
       gridHTML += '</div>';
     }
 
-    const ctaHTML = '<div class="category-book-wrap"><button class="book-now-btn book-now-btn--primary" onclick="showSection(\'bookingSection\')">Book an Appointment \u2192</button></div>';
+    const ctaHTML = '<div class="category-book-wrap"><button class="book-now-btn book-now-btn--primary" onclick="showSection(\'bookingSection\')">Book an Appointment →</button></div>';
 
     container.innerHTML = '<div class="gallery-section-label"><div class="gl-kicker">Owen's Steam Cleaning</div><h2>Our <span style="color:var(--teal)">Work</span></h2></div>' + switcherHTML + subHTML + gridHTML + ctaHTML;
 
