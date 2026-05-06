@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OWEN'S MOBILE STEAM CLEANING — Admin</title>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:          #0D1F22;
+      --surface:     #152528;
+      --surface2:    #1C2F33;
+      --surface3:    #223337;
+      --teal:        #0ABFBC;
+      --teal-glow:   rgba(10,191,188,0.22);
+      --teal-dim:    rgba(10,191,188,0.09);
+      --coral:       #FF6B6B;
+      --coral-glow:  rgba(255,107,107,0.2);
+      --sand:        #F5E6C8;
+      --text:        #E8F4F5;
+      --text-dim:    #5A7A7E;
+      --text-mid:    #9FBEC2;
+      --border:      rgba(10,191,188,0.12);
+      --border-soft: rgba(255,255,255,0.06);
+      --green:       #4ade80;
+
+      --neon: #0ABFBC;
+      --neon-glow: rgba(10,191,188,0.22);
+      --neon-dim: rgba(10,191,188,0.09);
+      --hot: #FF6B6B;
+      --hot-glow: rgba(255,107,107,0.2);
+      --amber: #F5E6C8;
+      --accent: #0ABFBC;
+      --accent2: #088E8C;
+      --red: #FF6B6B;
+      --red-deep: #cc4444;
+      --cream: #1C2F33;
+      --cream-soft: #223337;
+      --text-ink: #E8F4F5;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      min-height: 100vh;
+      padding-bottom: 54px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='30' r='1.2' fill='none' stroke='rgba(10,191,188,0.08)' stroke-width='1'/%3E%3C/svg%3E");
+      background-size: 60px 60px; pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 700px 500px at -5% 15%, rgba(10,191,188,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 500px 400px at 105% 85%, rgba(255,107,107,0.04) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+
+    body > div, body > #dashboardContent { position: relative; z-index: 1; }
+
+    /* ================ HEADER ================ */
+    .header-bar {
+      background: rgba(13,31,34,0.98);
+      backdrop-filter: blur(20px);
+      padding: 0 20px;
+      height: 64px;
+      display: flex; align-items: center; justify-content: center; text-align: center;
+      font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 5px;
+      color: var(--text); text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-bar::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent 0%, var(--teal) 25%, var(--sand) 50%, var(--teal) 75%, transparent 100%);
+      background-size: 300% 100%;
+      animation: stripeFlow 5s linear infinite;
+    }
+    @keyframes stripeFlow {
+      0% { background-position: 200% center; }
+      100% { background-position: -100% center; }
+    }
+    .brand-accent { color: var(--teal); }
+    .brand-admin { color: var(--text-dim); font-size: 12px; letter-spacing: 4px; margin-left: 10px; }
+
+    /* ================ TOP MENU ================ */
+    .top-menu {
+      display: flex; flex-direction: row; align-items: center; justify-content: center;
+      gap: 8px; background: var(--surface); padding: 14px 20px;
+      border-bottom: 1px solid var(--border); flex-wrap: wrap;
+    }
+    .top-menu button {
+      background: transparent; color: var(--text-dim);
+      border: 1px solid rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 50px;
+      cursor: pointer; font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+      font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase;
+      transition: all 0.2s ease; margin: 0;
+    }
+    .top-menu button:hover {
+      border-color: var(--teal); color: var(--teal); background: var(--teal-dim);
+      box-shadow: 0 0 14px var(--teal-glow);
+    }
+    .top-menu button.active-tab {
+      border-color: var(--teal); color: var(--teal); background: var(--teal-dim);
+    }
+
+    /* ================ ADMIN CONTAINER ================ */
+    .admin-container {
+      max-width: 1100px; margin: 28px auto; padding: 36px 28px 32px;
+      background: var(--surface); border-radius: 14px;
+      border: 1px solid var(--border);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.4); position: relative;
+    }
+    .admin-container::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 3px; background: linear-gradient(90deg, var(--teal), var(--coral));
+      border-radius: 14px 14px 0 0;
+    }
+
+    h2 {
+      color: var(--text); text-align: center;
+      font-family: 'Bebas Neue', sans-serif; letter-spacing: 3px;
+      font-size: 38px; margin: 8px 0 6px; text-transform: uppercase;
+    }
+    h2::after {
+      content: ''; display: block; width: 48px; height: 3px;
+      margin: 16px auto 24px;
+      background: linear-gradient(90deg, var(--teal), var(--coral));
+      border-radius: 2px;
+    }
+    h2 span.accent { color: var(--teal); }
+
+    .admin-kicker {
+      text-align: center; font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+      font-size: 10px; color: var(--teal); letter-spacing: 5px;
+      text-transform: uppercase; margin-bottom: 4px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .admin-kicker::before, .admin-kicker::after {
+      content: ''; width: 24px; height: 1px; background: var(--teal); opacity: 0.5;
+    }
+
+    /* ================ FORM FIELDS ================ */
+    input[type="text"], input[type="date"], input[type="time"], select {
+      width: 100%; padding: 11px 14px; margin-bottom: 14px;
+      border: 1.5px solid rgba(10,191,188,0.2); border-radius: 8px;
+      background: rgba(10,191,188,0.04); color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: 15px;
+      transition: border-color 0.2s ease, background 0.2s ease;
+      color-scheme: dark;
+    }
+    input::placeholder { color: var(--text-dim); }
+    input:focus, select:focus {
+      outline: none; border-color: var(--teal);
+      background: rgba(10,191,188,0.08);
+      box-shadow: 0 0 0 3px rgba(10,191,188,0.1);
+    }
+    select {
+      appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath fill='%230ABFBC' d='M6 8 0 0h12z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+      padding-right: 36px; cursor: pointer;
+      background-color: rgba(10,191,188,0.04);
+    }
+    select option { background: #1C2F33; color: var(--text); }
+
+    /* ================ BUTTONS ================ */
+    button {
+      background: transparent; color: var(--teal); border: 1px solid var(--teal);
+      padding: 12px 24px; border-radius: 50px; cursor: pointer; margin-bottom: 14px;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+      font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase;
+      transition: all 0.2s ease;
+    }
+    button:hover {
+      background: var(--teal-dim); box-shadow: 0 0 18px var(--teal-glow);
+    }
+    button:active { transform: scale(0.97); }
+
+    /* ================ UPLOAD AREA ================ */
+    .upload-area {
+      border: 2px dashed rgba(10,191,188,0.25); border-radius: 10px;
+      padding: 44px 24px; text-align: center; margin-bottom: 18px;
+      cursor: pointer; background: var(--surface2); transition: all 0.25s ease; position: relative;
+    }
+    .upload-area:hover {
+      background: var(--teal-dim); border-color: var(--teal);
+      box-shadow: 0 0 20px var(--teal-glow); border-style: solid;
+    }
+    .upload-area input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; margin: 0;
+    }
+    .upload-area .upload-icon { font-size: 36px; margin-bottom: 12px; }
+    .upload-area p { margin: 0; font-size: 14px; color: var(--text-dim); font-family: 'DM Sans', sans-serif; }
+    .upload-area strong { color: var(--teal); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 13px; display: inline-block; margin-bottom: 4px; }
+
+    #previewGrid { display: none; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; padding: 10px; background: var(--surface2); border: 1px solid rgba(10,191,188,0.15); border-radius: 8px; }
+    #uploadProgress { display: none; margin-bottom: 14px; }
+    #uploadProgress progress { width: 100%; height: 4px; border-radius: 2px; accent-color: var(--teal); }
+
+    /* ================ GALLERY ================ */
+    .gallery-category { margin-top: 36px; }
+    .gallery-category h3 {
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+      font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+      color: var(--teal); margin: 0 0 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .gallery-category h3::before { content: ''; width: 4px; height: 16px; background: var(--coral); border-radius: 2px; flex-shrink: 0; }
+
+    .gallery-wrapper { max-width: 1100px; margin: 0 auto; padding: 0 4px; }
+    .gallery-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 28px;
+    }
+    @media (min-width: 768px) { .gallery-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .gallery-grid div { position: relative; border-radius: 8px; overflow: hidden; }
+    .gallery-grid img {
+      width: 100%; height: 220px; object-fit: cover; border-radius: 8px;
+      border: 1px solid var(--border); transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .gallery-grid img:hover { transform: scale(1.03); border-color: var(--teal); box-shadow: 0 0 20px var(--teal-glow); }
+
+    .remove-btn {
+      position: absolute; top: 8px; right: 8px;
+      background: rgba(13,31,34,0.85); color: var(--coral); border: 1px solid var(--coral);
+      padding: 5px 10px; border-radius: 4px; cursor: pointer;
+      font-size: 10px; font-weight: 700; margin-bottom: 0; letter-spacing: 2px;
+      text-transform: uppercase; font-family: 'Space Grotesk', sans-serif;
+      transition: all 0.15s ease; backdrop-filter: blur(6px);
+    }
+    .remove-btn:hover { background: var(--coral); color: #fff; box-shadow: 0 0 10px var(--coral-glow); }
+
+    /* ================ TABLE ================ */
+    table {
+      width: 100%; border-collapse: collapse; margin-top: 28px;
+      background: var(--surface2); border-radius: 8px; overflow: hidden; border: 1px solid var(--border);
+    }
+    th, td {
+      border: none; border-bottom: 1px solid var(--border);
+      padding: 13px 10px; text-align: center;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text);
+    }
+    th {
+      background: var(--surface); color: var(--teal);
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+      letter-spacing: 2.5px; text-transform: uppercase; font-size: 11px;
+      padding: 14px 10px; border-bottom: 1px solid var(--border);
+    }
+
+    /* ================ SECTIONS ================ */
+    .content-section { display: none; }
+    .content-section.active { display: block; animation: fadeUp 0.35s ease; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .clear-container { display: flex; justify-content: center; margin-top: 26px; gap: 10px; flex-wrap: wrap; }
+    .clear-container input { padding: 11px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface2); color: var(--text); }
+
+    /* ================ RESERVATION CARDS ================ */
+    .reservation-card {
+      background: var(--surface2); border-radius: 10px;
+      border: 1px solid var(--border); border-left: 3px solid var(--coral);
+      padding: 20px 22px; margin: 14px 0; position: relative; transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .reservation-card:hover { border-color: var(--border); border-left-color: var(--teal); box-shadow: 0 0 20px rgba(10,191,188,0.07); }
+
+    .reservation-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid var(--border-soft);
+    }
+    .reservation-header h3 {
+      margin: 0; color: var(--text); font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700; letter-spacing: 1px; font-size: 16px; text-transform: uppercase;
+    }
+
+    .badge {
+      padding: 5px 11px; border-radius: 50px; font-size: 10px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase; font-family: 'Space Grotesk', sans-serif; border: none;
+    }
+    .badge.today    { background: rgba(255,107,107,0.15); color: var(--coral); }
+    .badge.upcoming { background: rgba(10,191,188,0.12); color: var(--teal); }
+    .badge.tomorrow { background: rgba(245,230,200,0.12); color: var(--sand); }
+    .badge.past     { background: rgba(255,255,255,0.05); color: var(--text-dim); }
+
+    .reservation-group {
+      margin-top: 28px; margin-bottom: 12px; padding: 12px 18px;
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--teal); border-radius: 8px; font-size: 11px; text-align: center;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+      letter-spacing: 4px; text-transform: uppercase;
+      box-shadow: 0 0 14px rgba(10,191,188,0.05);
+    }
+
+    .highlighted { border-color: var(--teal) !important; box-shadow: 0 0 0 2px rgba(10,191,188,0.25), 0 0 20px var(--teal-glow) !important; transition: all 0.3s ease-in-out; }
+
+    .reservation-card .action-buttons { display: flex; justify-content: flex-start; margin-top: 14px; gap: 8px; flex-wrap: wrap; }
+
+    .cancel-btn, .deposit-btn, .status-btn {
+      flex: 0 1 auto; padding: 9px 14px; font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+      border-radius: 50px; border: 1px solid; cursor: pointer; margin-bottom: 0;
+      font-size: 10px; letter-spacing: 2px; text-transform: uppercase; transition: all 0.18s ease; min-width: 90px;
+    }
+    .cancel-btn { background: transparent; color: var(--coral); border-color: rgba(255,107,107,0.35); }
+    .cancel-btn:hover { background: rgba(255,107,107,0.12); border-color: var(--coral); box-shadow: 0 0 10px var(--coral-glow); }
+    .deposit-btn { background: transparent; color: var(--teal); border-color: var(--border); }
+    .deposit-btn:hover { background: var(--teal-dim); border-color: var(--teal); box-shadow: 0 0 10px var(--teal-glow); }
+    .status-btn { background: transparent; color: var(--sand); border-color: rgba(245,230,200,0.3); }
+    .status-btn:hover { background: rgba(245,230,200,0.1); border-color: var(--sand); }
+
+    #unavailableDateInput, #startTimeInput, #endTimeInput {
+      width: 100%; padding: 11px 14px; margin-bottom: 14px;
+      border: 1.5px solid rgba(10,191,188,0.2); border-radius: 8px;
+      background: rgba(10,191,188,0.04); color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: 15px; color-scheme: dark;
+    }
+
+    .status-completed { color: var(--green); font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; font-size: 11px; font-family: 'Space Grotesk', sans-serif; }
+    .status-not { color: var(--coral); font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; font-size: 11px; font-family: 'Space Grotesk', sans-serif; }
+    .status-none { color: var(--text-dim); font-style: italic; font-size: 12px; }
+
+    label {
+      font-size: 11px; font-weight: 700; color: var(--teal);
+      text-transform: uppercase; letter-spacing: 2.5px;
+      display: block; margin-bottom: 6px; margin-top: 16px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    #unavailableDatesList li {
+      color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px;
+      padding: 10px 14px; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; margin-bottom: 8px; display: flex; align-items: center;
+      justify-content: space-between; gap: 10px;
+    }
+
+    /* Color override mappings for inline styles from JS */
+    [style*="background:#fff"], [style*="background: #fff"] { background: var(--surface2) !important; color: var(--text) !important; }
+    [style*="background:#fafafa"] { background: var(--surface3) !important; }
+    [style*="border:1px solid #ddd"] { border-color: var(--border) !important; }
+    [style*="color:#000"], [style*="color: #000"], [style*="color:#333"] { color: var(--text) !important; }
+    [style*="color:#555"], [style*="color:#666"] { color: var(--text-dim) !important; }
+    [style*="color:#1a1a1a"] { color: var(--text) !important; }
+    [style*="background:#ccc"], [style*="background:#eee"] { background: var(--surface2) !important; color: var(--text-dim) !important; }
+    [style*="background:#e53935"], [style*="background-color:#e53935"] { background: var(--coral) !important; }
+    [style*="background:#4CAF50"] { background: var(--green) !important; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== ACCESS OVERLAY ===== -->
+  <div id="accessOverlay" style="
+    position:fixed;inset:0;z-index:99999;
+    background:
+      radial-gradient(ellipse 700px 500px at -10% 20%, rgba(10,191,188,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 600px 400px at 110% 80%, rgba(255,107,107,0.04) 0%, transparent 60%),
+      #0D1F22;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:22px;">
+    <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;letter-spacing:5px;color:#0ABFBC;text-transform:uppercase;">Admin Portal</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:3px;color:#E8F4F5;text-align:center;text-transform:uppercase;">Checking Access</div>
+    <div style="width:48px;height:2px;background:linear-gradient(90deg,#0ABFBC,#FF6B6B);border-radius:1px;"></div>
+    <div style="display:flex;gap:8px;">
+      <span style="width:6px;height:6px;border-radius:50%;background:#0ABFBC;animation:dotpulse 1.2s ease-in-out infinite;display:inline-block;"></span>
+      <span style="width:6px;height:6px;border-radius:50%;background:#0ABFBC;animation:dotpulse 1.2s ease-in-out 0.4s infinite;display:inline-block;"></span>
+      <span style="width:6px;height:6px;border-radius:50%;background:#0ABFBC;animation:dotpulse 1.2s ease-in-out 0.8s infinite;display:inline-block;"></span>
+    </div>
+    <div id="accessStatus" style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:11px;color:#4A7A7E;letter-spacing:4px;text-transform:uppercase;">Verifying identity…</div>
+  </div>
+  <style>
+    @keyframes dotpulse { 0%,100%{opacity:0.2;transform:scale(0.8);}50%{opacity:1;transform:scale(1.2);} }
+    #dashboardContent{display:none;}
+  </style>
+
+  <div id="dashboardContent">
+    <div class="header-bar">
+      Owen's <span class="brand-accent">Steam</span> Cleaning <span class="brand-admin">— ADMIN</span>
+    </div>
+
+    <div class="top-menu">
+      <button onclick="showSection('gallerySection')">🖼 Gallery</button>
+      <button onclick="showSection('reservationsPage')">📅 Reservations</button>
+      <button onclick="showSection('unavailableDaysSection')">🚫 Unavailable Days</button>
+    </div>
+
+    <!-- Gallery Management -->
+    <div id="gallerySection" class="admin-container content-section">
+      <div class="admin-kicker">Photo Gallery</div>
+      <h2>Upload <span class="accent">Photo</span></h2>
+
+      <div class="upload-area" id="uploadArea" ondrop="handleDrop(event)" ondragover="event.preventDefault()">
+        <input type="file" id="photoFileInput" accept="image/*" multiple onchange="previewImages(event)"/>
+        <div class="upload-icon">📷</div>
+        <p><strong>Tap to choose photos</strong><br>or drag and drop here<br><span style="color:var(--teal);font-size:12px;letter-spacing:1px;">SELECT MULTIPLE AT ONCE</span></p>
+      </div>
+
+      <div id="previewGrid" style="display:none; gap:8px; flex-wrap:wrap; margin-bottom:14px;"></div>
+
+      <div id="uploadProgress" style="display:none; margin-bottom:14px;">
+        <p style="font-size:11px; color:var(--text-dim); margin-bottom:6px; letter-spacing:2px; text-transform:uppercase; font-family:'Space Grotesk',sans-serif;" id="uploadStatusText">Uploading…</p>
+        <progress id="progressBar" value="0" max="100"></progress>
+      </div>
+
+      <label for="photoCategorySelect">Select Category</label>
+      <select id="photoCategorySelect">
+        <option value="HOME CLEANING">HOME CLEANING</option>
+        <option value="MATTRESS CLEANING">MATTRESS CLEANING</option>
+        <option value="CARPET & RUGS">CARPET &amp; RUGS</option>
+        <option value="SOFA & UPHOLSTERY">SOFA &amp; UPHOLSTERY</option>
+        <option value="CAR INTERIOR">CAR INTERIOR</option>
+        <option value="CAR EXTERIOR">CAR EXTERIOR</option>
+        <option value="BEFORE & AFTER">BEFORE &amp; AFTER</option>
+      </select>
+
+      <button onclick="uploadPhotos()" id="uploadBtn">Add Photos</button>
+
+      <div id="adminGallery"></div>
+    </div>
+
+    <!-- Reservations -->
+    <div class="admin-container content-section" id="reservationsPage">
+      <div class="admin-kicker">The Day Book</div>
+      <h2>Reservations</h2>
+      <div style="display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap;">
+        <input id="reservationSearch" placeholder="Search reservations…" type="text" style="flex:1; min-width:180px;"/>
+        <button onclick="searchReservations()" style="margin-bottom:0;">Search</button>
+      </div>
+      <div id="reservationsList"></div>
+      <div class="clear-container">
+        <input id="clearInput" placeholder='Type "CONFIRM" to clear past reservations' type="text"/>
+        <button onclick="clearReservations()">Clear Past Reservations</button>
+      </div>
+    </div>
+
+    <!-- Unavailable Days -->
+    <div class="admin-container content-section" id="unavailableDaysSection">
+      <div class="admin-kicker">The Calendar</div>
+      <h2>Unavailable Days</h2>
+      <label>Date</label>
+      <input id="unavailableDateInput" type="date"/>
+      <label style="display:flex; align-items:center; gap:8px; margin-top:16px; text-transform:none; letter-spacing:0; color:var(--text-mid);">
+        <input checked id="allDayCheckbox" onchange="toggleTimeInputs()" type="checkbox" style="width:auto; margin:0;"/> All Day
+      </label>
+      <div id="timeInputs" style="display:none; margin-top:10px;">
+        <label>From</label>
+        <input id="startTimeInput" type="time"/>
+        <label>Until</label>
+        <input id="endTimeInput" type="time"/>
+      </div>
+      <button onclick="addUnavailableDate()">Add Unavailable Date</button>
+      <div style="margin-top:28px; margin-bottom:14px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:11px; letter-spacing:3px; color:var(--teal); text-transform:uppercase;">— Blocked Dates —</div>
+      <ul id="unavailableDatesList" style="list-style:none; padding:0;"></ul>
+    </div>
+
+    <!-- Conflict Modal -->
+    <div id="conflictModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:2000;">
+      <div style="background:var(--surface2); padding:24px; border-radius:14px; max-width:450px; width:90%; max-height:80%; overflow-y:auto; box-shadow:0 4px 30px rgba(0,0,0,0.6); border-top:3px solid var(--sand);">
+        <h3 style="margin-bottom:10px; color:var(--sand); font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:2px;">⚠️ Conflicting Bookings</h3>
+        <p style="font-size:13px; color:var(--text-mid); margin-bottom:15px;">Please <strong style="color:var(--text);">contact the client</strong> and <strong style="color:var(--text);">cancel the booking</strong> before marking this time as unavailable.</p>
+        <div id="conflictList"></div>
+        <div style="text-align:right; margin-top:15px;">
+          <button onclick="closeConflictModal()" style="background:var(--teal-dim); color:var(--teal); border-color:var(--teal); padding:8px 14px; border-radius:50px; cursor:pointer; margin-bottom:0;">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deposit Modal -->
+    <div id="depositModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:1000;">
+      <div style="background:var(--surface2); padding:28px 24px; border-radius:14px; max-width:320px; width:90%; text-align:center; box-shadow:0 4px 30px rgba(0,0,0,0.5); border-top:3px solid var(--teal);">
+        <h3 style="margin-bottom:15px; font-family:'Bebas Neue',sans-serif; letter-spacing:2px; color:var(--teal); font-size:22px;">Update Payment Status</h3>
+        <label style="display:block; text-align:left; margin:10px 0; font-weight:normal; text-transform:none; letter-spacing:0; color:var(--text-mid); cursor:pointer;">
+          <input type="radio" name="depositChoice" value="Made" style="width:auto; margin-right:8px;"> 💵 Payment Made
+        </label>
+        <label style="display:block; text-align:left; margin:10px 0; font-weight:normal; text-transform:none; letter-spacing:0; color:var(--text-mid); cursor:pointer;">
+          <input type="radio" name="depositChoice" value="No" style="width:auto; margin-right:8px;"> ❌ No Payment Made
+        </label>
+        <div style="margin-top:20px; display:flex; gap:10px; justify-content:center;">
+          <button onclick="closeDepositModal()" style="background:var(--surface3); color:var(--text-dim); border-color:var(--border-soft); padding:8px 16px; border-radius:50px; margin-bottom:0;">Cancel</button>
+          <button onclick="confirmDeposit()" style="background:var(--teal); color:#0D1F22; border-color:var(--teal); padding:8px 16px; border-radius:50px; margin-bottom:0; font-weight:800;">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Modal -->
+    <div id="statusModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:1100;">
+      <div style="background:var(--surface2); padding:28px 24px; border-radius:14px; max-width:320px; width:90%; text-align:center; box-shadow:0 4px 30px rgba(0,0,0,0.5); border-top:3px solid var(--teal);">
+        <h3 style="margin-bottom:15px; font-family:'Bebas Neue',sans-serif; letter-spacing:2px; color:var(--teal); font-size:22px;">Update Booking Status</h3>
+        <label style="display:block; text-align:left; margin:10px 0; font-weight:normal; text-transform:none; letter-spacing:0; color:var(--text-mid); cursor:pointer;">
+          <input type="radio" name="statusChoice" value="Completed" style="width:auto; margin-right:8px;"> ✅ Completed
+        </label>
+        <label style="display:block; text-align:left; margin:10px 0; font-weight:normal; text-transform:none; letter-spacing:0; color:var(--text-mid); cursor:pointer;">
+          <input type="radio" name="statusChoice" value="Not Completed" style="width:auto; margin-right:8px;"> ❌ Not Completed
+        </label>
+        <div style="margin-top:20px; display:flex; gap:10px; justify-content:center;">
+          <button onclick="closeStatusModal()" style="background:var(--surface3); color:var(--text-dim); border-color:var(--border-soft); padding:8px 16px; border-radius:50px; margin-bottom:0;">Cancel</button>
+          <button onclick="confirmStatus()" style="background:var(--teal); color:#0D1F22; border-color:var(--teal); padding:8px 16px; border-radius:50px; margin-bottom:0; font-weight:800;">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Cancel Modal -->
+    <div id="adminCancelModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:2000;">
+      <div style="background:var(--surface2); padding:28px 24px; border-radius:14px; max-width:320px; width:90%; text-align:center; box-shadow:0 8px 30px rgba(0,0,0,0.5); border-top:3px solid var(--coral);">
+        <input type="hidden" id="adminCancelBookingId"/>
+        <div style="font-size:40px; margin-bottom:10px;">⚠️</div>
+        <h3 style="margin:0 0 8px; font-family:'Bebas Neue',sans-serif; letter-spacing:2px; color:var(--coral); font-size:24px;">Cancel Booking?</h3>
+        <p style="font-size:13px; color:var(--text-mid); margin:0 0 22px; line-height:1.5;">This will mark the booking as <strong style="color:var(--coral);">Cancelled</strong>. The client will still appear in the list with a cancelled status.</p>
+        <div style="display:flex; gap:10px; justify-content:center;">
+          <button onclick="closeAdminCancelModal()" style="flex:1; background:var(--surface3); color:var(--text-dim); border-color:var(--border-soft); padding:11px 16px; border-radius:50px; cursor:pointer; margin-bottom:0;">Keep</button>
+          <button onclick="confirmAdminCancel()" style="flex:1; background:var(--coral); color:white; border-color:var(--coral); padding:11px 16px; border-radius:50px; cursor:pointer; margin-bottom:0; font-weight:800;">Yes, Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" style="visibility:hidden; min-width:250px; margin-left:-125px; background-color:#0ABFBC; color:#0D1F22; text-align:center; border-radius:50px; padding:14px; position:fixed; z-index:3000; left:50%; bottom:30px; font-size:14px; box-shadow:0 4px 20px rgba(10,191,188,0.4); opacity:0; transition:opacity 0.5s, bottom 0.5s; font-family:'Space Grotesk',sans-serif; font-weight:700; letter-spacing:1px;"></div>
+
+  </div><!-- end dashboardContent -->
+
+  <!-- Footer Banner -->
+  <div style="position:fixed;bottom:0;left:0;right:0;background-color:#0A191C;border-top:1px solid rgba(10,191,188,0.12);text-align:center;padding:5px 20px;font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:2px;color:var(--text-dim);z-index:1000;">
+    <a href="https://www.webvtec.com" target="_blank" style="color:var(--text-dim);text-decoration:underline;display:block;width:100%;" onmouseover="this.style.color='var(--teal)'" onmouseout="this.style.color='var(--text-dim)'">CLICK TO REQUEST YOUR OWN WEBSITE. <span style="color:var(--teal);">webvtec.com</span></a>
+  </div>
+
+  <script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAfFEjHpHyPWHNVYPMZKCaPvuvj2hazbuU",
+    authDomain: "phase-ii-auto-detailing.firebaseapp.com",
+    projectId: "phase-ii-auto-detailing",
+    storageBucket: "phase-ii-auto-detailing.firebasestorage.app",
+    messagingSenderId: "385920085583",
+    appId: "1:385920085583:web:12207783f159857bbcc43a"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const storage = firebase.storage();
+
+  function showSection(sectionId) {
+    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+    document.getElementById(sectionId).classList.add('active');
+    document.querySelectorAll('.top-menu button').forEach(b => b.classList.remove('active-tab'));
+    if (sectionId === 'reservationsPage') { loadReservations(); }
+  }
+
+  function toggleTimeInputs() {
+    const isAllDay = document.getElementById('allDayCheckbox').checked;
+    document.getElementById('timeInputs').style.display = isAllDay ? 'none' : 'block';
+  }
+
+  function previewImages(event) {
+    const files = Array.from(event.target.files);
+    if (!files.length) return;
+    renderPreviews(files);
+  }
+
+  function handleDrop(event) {
+    event.preventDefault();
+    const files = Array.from(event.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+    if (!files.length) return;
+    window._pendingFiles = files;
+    renderPreviews(files);
+  }
+
+  function renderPreviews(files) {
+    const grid = document.getElementById('previewGrid');
+    grid.innerHTML = '';
+    grid.style.display = 'flex';
+    const uploadArea = document.getElementById('uploadArea');
+    uploadArea.querySelector('p').innerHTML = `<strong>${files.length} photo${files.length > 1 ? 's' : ''} selected</strong><br><span style="color:var(--teal);font-size:12px;">Ready to upload</span>`;
+    files.forEach((file, i) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'position:relative;width:80px;height:80px;border-radius:8px;overflow:hidden;border:1px solid rgba(10,191,188,0.3);flex-shrink:0;';
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+        const badge = document.createElement('div');
+        badge.style.cssText = 'position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);font-size:9px;color:#fff;text-align:center;padding:2px;font-family:Space Grotesk,sans-serif;';
+        badge.textContent = i + 1;
+        wrap.appendChild(img); wrap.appendChild(badge); grid.appendChild(wrap);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function uploadPhotos() {
+    const fileInput = document.getElementById('photoFileInput');
+    const categorySelect = document.getElementById('photoCategorySelect');
+    const category = categorySelect.value.trim();
+    const files = window._pendingFiles && window._pendingFiles.length ? window._pendingFiles : Array.from(fileInput.files);
+    if (!files.length) { alert('Please select at least one photo first.'); return; }
+    if (!category) { alert('Please select a category.'); return; }
+    const uploadBtn = document.getElementById('uploadBtn');
+    uploadBtn.disabled = true;
+    const progressDiv = document.getElementById('uploadProgress');
+    const progressBar = document.getElementById('progressBar');
+    const statusText = document.getElementById('uploadStatusText');
+    progressDiv.style.display = 'block';
+    let completed = 0, failed = 0;
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      statusText.textContent = `Uploading ${i + 1} of ${files.length}… (${file.name})`;
+      progressBar.value = 0;
+      try {
+        await new Promise((resolve, reject) => {
+          const timestamp = Date.now();
+          const ext = file.name.split('.').pop();
+          const fileName = `gallery/${timestamp}_${Math.random().toString(36).substring(2)}.${ext}`;
+          const storageRef = storage.ref(fileName);
+          const uploadTask = storageRef.put(file);
+          uploadTask.on('state_changed',
+            (snapshot) => { progressBar.value = (snapshot.bytesTransferred / snapshot.totalBytes) * 100; },
+            (error) => reject(error),
+            () => {
+              uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                return db.collection('gallery').add({ url: downloadURL, category: category, sortOrder: Date.now() + i, uploadedAt: firebase.firestore.FieldValue.serverTimestamp() });
+              }).then(resolve).catch(reject);
+            }
+          );
+        });
+        completed++;
+      } catch (err) { console.error('Upload failed for', file.name, err); failed++; }
+    }
+    fileInput.value = ''; window._pendingFiles = [];
+    const grid = document.getElementById('previewGrid'); grid.innerHTML = ''; grid.style.display = 'none';
+    progressDiv.style.display = 'none'; progressBar.value = 0;
+    uploadBtn.disabled = false;
+    document.getElementById('uploadArea').querySelector('p').innerHTML = '<strong>Tap to choose photos</strong><br>or drag and drop here<br><span style="color:var(--teal);font-size:12px;letter-spacing:1px;">SELECT MULTIPLE AT ONCE</span>';
+    if (failed === 0) { showToast(`✅ ${completed} photo${completed > 1 ? 's' : ''} uploaded!`); }
+    else { showToast(`⚠️ ${completed} uploaded, ${failed} failed.`); }
+  }
+
+  function uploadPhoto() { uploadPhotos(); }
+
+  function loadGallery() {
+    const galleryContainer = document.getElementById('adminGallery');
+    galleryContainer.innerHTML = '';
+    db.collection('gallery').orderBy('sortOrder', 'asc').onSnapshot((querySnapshot) => {
+      let docs = [];
+      querySnapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
+      docs.sort((a, b) => {
+        if (a.sortOrder !== undefined && b.sortOrder !== undefined) return a.sortOrder - b.sortOrder;
+        if (a.sortOrder !== undefined) return -1;
+        if (b.sortOrder !== undefined) return 1;
+        return 0;
+      });
+      galleryContainer.innerHTML = '';
+      if (docs.length === 0) { galleryContainer.innerHTML = '<p style="text-align:center;color:var(--text-dim);margin-top:20px;">No photos in gallery yet.</p>'; return; }
+      const categories = {};
+      docs.forEach(item => {
+        const category = item.category || 'Uncategorized';
+        if (!categories[category]) categories[category] = [];
+        categories[category].push({ imageUrl: item.url, docId: item.id, sortOrder: item.sortOrder });
+      });
+      for (const category in categories) {
+        const catId = `gallery-${category.replace(/\s+/g,'-')}`;
+        const catDiv = document.createElement('div');
+        catDiv.className = 'gallery-category';
+        catDiv.innerHTML = `<h3>${category}</h3><p style="text-align:center;font-size:12px;color:var(--text-dim);margin-top:-10px;margin-bottom:10px;">Hold &amp; drag photos to reorder</p><div class="gallery-wrapper"><div class="gallery-grid" id="${catId}" data-category="${category}"></div></div>`;
+        galleryContainer.appendChild(catDiv);
+        const grid = catDiv.querySelector(`#${catId}`);
+        categories[category].forEach((item) => {
+          const cell = document.createElement('div');
+          cell.draggable = true; cell.dataset.docId = item.docId;
+          cell.style.position = 'relative'; cell.style.cursor = 'grab'; cell.style.userSelect = 'none';
+          cell.innerHTML = `<img src="${item.imageUrl}" alt="Clean" style="width:100%;height:250px;object-fit:cover;border-radius:8px;pointer-events:none;"><button class="remove-btn" onclick="removePhoto('${item.docId}')">✕ Remove</button><div style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.5);color:var(--teal);border-radius:4px;padding:3px 6px;font-size:11px;pointer-events:none;">⠿ DRAG</div>`;
+          grid.appendChild(cell);
+        });
+        initDragReorder(grid);
+      }
+    });
+  }
+
+  function initDragReorder(grid) {
+    let dragSrc = null;
+    grid.addEventListener('dragstart', e => { dragSrc = e.target.closest('[draggable]'); if (!dragSrc) return; dragSrc.style.opacity = '0.4'; e.dataTransfer.effectAllowed = 'move'; });
+    grid.addEventListener('dragover', e => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; const target = e.target.closest('[draggable]'); if (target && target !== dragSrc) { const rect = target.getBoundingClientRect(); const after = e.clientX > rect.left + rect.width / 2; if (after) grid.insertBefore(dragSrc, target.nextSibling); else grid.insertBefore(dragSrc, target); } });
+    grid.addEventListener('dragend', e => {
+      if (dragSrc) dragSrc.style.opacity = ''; dragSrc = null;
+      const cells = Array.from(grid.querySelectorAll('[draggable]'));
+      const batch = db.batch();
+      cells.forEach((cell, index) => { if (cell.dataset.docId) batch.update(db.collection('gallery').doc(cell.dataset.docId), { sortOrder: index }); });
+      batch.commit().then(() => showToast('✅ Photo order saved.')).catch(() => showToast('❌ Failed to save order.', false));
+    });
+    let touchDragEl = null, touchClone = null, touchOffsetX = 0, touchOffsetY = 0, longPressTimer = null;
+    grid.addEventListener('touchstart', e => {
+      const cell = e.target.closest('[draggable]');
+      if (!cell) return;
+      longPressTimer = setTimeout(() => {
+        touchDragEl = cell;
+        const rect = cell.getBoundingClientRect();
+        touchOffsetX = e.touches[0].clientX - rect.left; touchOffsetY = e.touches[0].clientY - rect.top;
+        touchClone = cell.cloneNode(true);
+        touchClone.style.cssText = `position:fixed;top:${rect.top}px;left:${rect.left}px;width:${rect.width}px;opacity:0.7;z-index:9999;pointer-events:none;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.4);transition:none;`;
+        document.body.appendChild(touchClone); cell.style.opacity = '0.3';
+        navigator.vibrate && navigator.vibrate(50);
+      }, 400);
+    }, { passive: true });
+    grid.addEventListener('touchmove', e => {
+      if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+      if (!touchDragEl) return; e.preventDefault();
+      const touch = e.touches[0];
+      touchClone.style.top = (touch.clientY - touchOffsetY) + 'px'; touchClone.style.left = (touch.clientX - touchOffsetX) + 'px';
+      touchClone.style.display = 'none';
+      const el = document.elementFromPoint(touch.clientX, touch.clientY);
+      touchClone.style.display = '';
+      const target = el && el.closest('[draggable]');
+      if (target && target !== touchDragEl && target.parentElement === grid) {
+        const rect = target.getBoundingClientRect(); const after = touch.clientX > rect.left + rect.width / 2;
+        if (after) grid.insertBefore(touchDragEl, target.nextSibling); else grid.insertBefore(touchDragEl, target);
+      }
+    }, { passive: false });
+    const endTouch = () => {
+      if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+      if (!touchDragEl) return;
+      touchDragEl.style.opacity = ''; touchClone && touchClone.remove(); touchClone = null;
+      const cells = Array.from(grid.querySelectorAll('[draggable]'));
+      const batch = db.batch();
+      cells.forEach((cell, index) => { if (cell.dataset.docId) batch.update(db.collection('gallery').doc(cell.dataset.docId), { sortOrder: index }); });
+      batch.commit().then(() => showToast('✅ Photo order saved.')).catch(() => showToast('❌ Failed.', false));
+      touchDragEl = null;
+    };
+    grid.addEventListener('touchend', endTouch, { passive: true });
+    grid.addEventListener('touchcancel', endTouch, { passive: true });
+  }
+
+  function removePhoto(docId) {
+    if (!confirm("Remove this photo?")) return;
+    db.collection('gallery').doc(docId).delete().then(() => showToast('🗑 Photo removed.')).catch((e) => alert('Error: ' + e.message));
+  }
+
+  function loadReservations() {
+    const reservationsContainer = document.getElementById('reservationsList');
+    db.collection('bookings').orderBy("date", "asc").onSnapshot(snapshot => {
+      reservationsContainer.innerHTML = '';
+      if (snapshot.empty) { reservationsContainer.innerHTML = "<p style='color:var(--text-dim);text-align:center;'>No reservations found.</p>"; return; }
+      const now = new Date();
+      const todayY = now.getFullYear(), todayM = now.getMonth(), todayD = now.getDate();
+      const tomorrow = new Date(now); tomorrow.setDate(todayD + 1);
+      const todayList = [], tomorrowList = [], upcomingList = [], pastList = [];
+      snapshot.forEach(doc => {
+        const booking = doc.data();
+        if (typeof booking.date !== "string") return;
+        const [y, m, d] = booking.date.split('-').map(Number);
+        const bDate = new Date(y, m - 1, d);
+        const formattedDate = bDate.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+        const bookingWithSort = { id: doc.id, ...booking, date: formattedDate, timeSort: convertTimeToMinutes(booking.time) };
+        const bY = bDate.getFullYear(), bM = bDate.getMonth(), bD = bDate.getDate();
+        if (bY === todayY && bM === todayM && bD === todayD) todayList.push(bookingWithSort);
+        else if (bY === tomorrow.getFullYear() && bM === tomorrow.getMonth() && bD === tomorrow.getDate()) tomorrowList.push(bookingWithSort);
+        else if (bDate > tomorrow) upcomingList.push(bookingWithSort);
+        else if (bDate < new Date(todayY, todayM, todayD)) pastList.push(bookingWithSort);
+      });
+      const sortByTime = (a, b) => a.timeSort - b.timeSort;
+      todayList.sort(sortByTime); tomorrowList.sort(sortByTime); upcomingList.sort(sortByTime); pastList.sort(sortByTime);
+      function renderGroup(title, list, badgeClass) {
+        if (!list.length) return;
+        reservationsContainer.innerHTML += `<div class="reservation-group">${title}</div>`;
+        list.forEach(booking => {
+          const isCancelled = booking.status === 'Cancelled';
+          reservationsContainer.innerHTML += `
+            <div class="reservation-card" data-id="${booking.id}" style="${isCancelled ? 'opacity:0.7; border-left-color:var(--red-deep);' : ''}">
+              <div class="reservation-header">
+                <h3>${booking.name}</h3>
+                <div style="display:flex; gap:6px; align-items:center;">
+                  ${isCancelled ? `<span class="badge" style="background:rgba(255,107,107,0.15); color:var(--coral);">Cancelled · ${booking.cancelledBy === 'client' ? 'Client' : 'Admin'}</span>` : `<span class="badge ${badgeClass}">${title}</span>`}
+                </div>
+              </div>
+              <div style="display:grid; grid-template-columns:130px 1fr; gap:4px 14px; font-size:13px;">
+                <span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:1.5px; font-size:10px; padding-top:2px;">Phone</span><span>${booking.phone}</span>
+                <span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:1.5px; font-size:10px; padding-top:2px;">Location</span><span style="color:var(--teal);">${booking.location || '—'}</span>
+                <span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:1.5px; font-size:10px; padding-top:2px;">Service Type</span><span style="font-weight:600;">${booking.serviceType || '—'}</span>
+                <span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:1.5px; font-size:10px; padding-top:2px;">Services</span><span style="color:var(--text-mid);">${booking.services || booking.service || '—'}</span>
+                <span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:1.5px; font-size:10px; padding-top:2px;">Date</span><span>${booking.date}</span>
+                <span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:1.5px; font-size:10px; padding-top:2px;">Time</span><span>${booking.time}</span>
+                ${booking.notes ? `<span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:1.5px; font-size:10px; padding-top:2px;">Notes</span><span style="color:var(--sand); font-style:italic;">${booking.notes}</span>` : ''}
+                <span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:1.5px; font-size:10px; padding-top:2px;">Payment</span><span>${booking.deposit || '—'}</span>
+                <span style="color:var(--text-dim); text-transform:uppercase; letter-spacing:1.5px; font-size:10px; padding-top:2px;">Status</span><span class="${booking.status === 'Completed' ? 'status-completed' : booking.status === 'Cancelled' ? 'status-not' : booking.status === 'Not Completed' ? 'status-not' : 'status-none'}">${booking.status || 'Not set'}</span>
+              </div>
+              <div class="action-buttons">
+                ${!isCancelled ? `<button class="cancel-btn" onclick="cancelReservation('${booking.id}')">Cancel</button>` : `<button class="cancel-btn" disabled style="opacity:0.4; cursor:not-allowed;">Cancelled</button>`}
+                <button class="deposit-btn" onclick="updateDeposit('${booking.id}')">Payment</button>
+                ${title === "Today" && !isCancelled ? `<button class="status-btn" onclick="updateStatus('${booking.id}')">Status</button>` : ""}
+              </div>
+            </div>`;
+        });
+      }
+      renderGroup("Today", todayList, "today");
+      renderGroup("Tomorrow", tomorrowList, "tomorrow");
+      renderGroup("Upcoming", upcomingList, "upcoming");
+      renderGroup("Past", pastList, "past");
+    });
+  }
+
+  function convertTimeToMinutes(timeStr) {
+    if (!timeStr) return 0;
+    const timeParts = timeStr.trim().split(' ');
+    if (timeParts.length !== 2) return 0;
+    const [time, period] = timeParts;
+    const [hours, minutes] = time.split(':').map(Number);
+    if (isNaN(hours) || isNaN(minutes)) return 0;
+    let total = (hours * 60) + minutes;
+    if (period.toUpperCase() === 'PM' && hours !== 12) total += (12 * 60);
+    if (period.toUpperCase() === 'AM' && hours === 12) total -= (12 * 60);
+    return total;
+  }
+
+  function searchReservations() {
+    const query = document.getElementById("reservationSearch").value.toLowerCase();
+    document.querySelectorAll(".highlighted").forEach(el => el.classList.remove("highlighted"));
+    if (!query) return;
+    const cards = document.querySelectorAll(".reservation-card");
+    for (let card of cards) {
+      if (card.innerText.toLowerCase().includes(query)) {
+        card.classList.add("highlighted"); card.scrollIntoView({ behavior: "smooth", block: "center" }); break;
+      }
+    }
+  }
+
+  function clearReservations() {
+    const confirmInput = document.getElementById('clearInput').value.trim();
+    if (confirmInput !== 'CONFIRM') { alert('Type "CONFIRM" to clear past reservations.'); return; }
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    db.collection('bookings').get().then(snapshot => {
+      const batch = db.batch();
+      snapshot.forEach(doc => {
+        const booking = doc.data();
+        if (booking.date && typeof booking.date === "string") {
+          const [year, month, day] = booking.date.split('-').map(Number);
+          const bookingDate = new Date(year, month - 1, day); bookingDate.setHours(0, 0, 0, 0);
+          if (bookingDate < today) batch.delete(doc.ref);
+        }
+      });
+      return batch.commit();
+    }).then(() => { showToast('✅ Past reservations cleared.'); document.getElementById('clearInput').value = ''; })
+    .catch(err => alert("Failed to clear past reservations."));
+  }
+
+  function cancelReservation(orderId) {
+    document.getElementById('adminCancelBookingId').value = orderId;
+    document.getElementById('adminCancelModal').style.display = 'flex';
+  }
+
+  function confirmAdminCancel() {
+    const orderId = document.getElementById('adminCancelBookingId').value;
+    if (!orderId) return;
+    db.collection("bookings").doc(orderId).update({ status: 'Cancelled', cancelledBy: 'admin' })
+      .then(() => { closeAdminCancelModal(); showToast('🗑 Booking cancelled.'); })
+      .catch(err => { closeAdminCancelModal(); alert("Failed to cancel: " + err.message); });
+  }
+
+  function closeAdminCancelModal() {
+    document.getElementById('adminCancelModal').style.display = 'none';
+    document.getElementById('adminCancelBookingId').value = '';
+  }
+
+  let currentBookingId = null;
+  function updateDeposit(bookingId) {
+    currentBookingId = bookingId;
+    document.querySelectorAll('input[name="depositChoice"]').forEach(r => r.checked = false);
+    document.getElementById('depositModal').style.display = 'flex';
+  }
+  function confirmDeposit() {
+    const choice = document.querySelector('input[name="depositChoice"]:checked');
+    if (!choice) { showToast("⚠️ Please select an option.", false); return; }
+    db.collection('bookings').doc(currentBookingId).update({ deposit: choice.value })
+      .then(() => { closeDepositModal(); showToast(`✅ Payment status: ${choice.value}`); })
+      .catch(() => showToast("❌ Failed to update payment.", false));
+  }
+  function closeDepositModal() { document.getElementById('depositModal').style.display = 'none'; currentBookingId = null; }
+
+  let currentStatusBookingId = null;
+  function updateStatus(bookingId) {
+    currentStatusBookingId = bookingId;
+    document.querySelectorAll('input[name="statusChoice"]').forEach(r => r.checked = false);
+    document.getElementById('statusModal').style.display = 'flex';
+  }
+  function confirmStatus() {
+    const choice = document.querySelector('input[name="statusChoice"]:checked');
+    if (!choice) { alert("Please select an option."); return; }
+    db.collection('bookings').doc(currentStatusBookingId).update({ status: choice.value })
+      .then(() => { closeStatusModal(); loadReservations(); })
+      .catch(() => alert("Failed to update status."));
+  }
+  function closeStatusModal() { document.getElementById('statusModal').style.display = 'none'; currentStatusBookingId = null; }
+
+  async function addUnavailableDate() {
+    const date = document.getElementById('unavailableDateInput').value;
+    const allDay = document.getElementById('allDayCheckbox').checked;
+    const startTime = document.getElementById('startTimeInput').value;
+    const endTime = document.getElementById('endTimeInput').value;
+    if (!date) { alert("Please select a date."); return; }
+    if (!allDay && (!startTime || !endTime)) { alert("Please provide both start and end time."); return; }
+    const [yyyy, mm, dd] = date.split("-");
+    const finalDate = `${yyyy}-${mm}-${dd}`;
+    try {
+      const snapshot = await db.collection("bookings").where("date", "==", finalDate).get();
+      const conflicts = [];
+      if (!snapshot.empty) {
+        snapshot.forEach(doc => {
+          const booking = doc.data();
+          if (allDay) { conflicts.push({ id: doc.id, ...booking }); }
+          else if (booking.time) {
+            const bMin = convertTimeToMinutes(booking.time);
+            const sMin = convertTimeToMinutes(startTime);
+            const eMin = convertTimeToMinutes(endTime);
+            if (bMin >= sMin && bMin <= eMin) conflicts.push({ id: doc.id, ...booking });
+          }
+        });
+      }
+      if (conflicts.length > 0) { showConflictModal(conflicts); return; }
+      await db.collection("unavailableDays").add({ date: finalDate, allDay, startTime: allDay ? null : startTime, endTime: allDay ? null : endTime, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+      document.getElementById('unavailableDateInput').value = '';
+      document.getElementById('startTimeInput').value = '';
+      document.getElementById('endTimeInput').value = '';
+      document.getElementById('allDayCheckbox').checked = true;
+      document.getElementById('timeInputs').style.display = 'none';
+      showToast('✅ Unavailable day added.');
+    } catch (error) { console.error(error); alert("Failed to add unavailable day."); }
+  }
+
+  function loadUnavailableDates() {
+    const list = document.getElementById('unavailableDatesList');
+    db.collection('unavailableDays').orderBy('date').onSnapshot(snapshot => {
+      list.innerHTML = '';
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        let formattedDate = d.date;
+        if (d.date && d.date.includes("-")) {
+          const [yyyy, mm, dd] = d.date.split("-");
+          formattedDate = new Date(yyyy, mm - 1, dd).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+        }
+        let text = `${formattedDate} — ${d.allDay ? 'All Day' : `${d.startTime} to ${d.endTime}`}`;
+        list.innerHTML += `<li>${text} <button onclick="removeUnavailableDate('${doc.id}')" style="background:var(--coral); color:white; border:none; padding:4px 10px; border-radius:50px; cursor:pointer; font-size:11px; margin-bottom:0; font-weight:700;">Remove</button></li>`;
+      });
+    });
+  }
+
+  function removeUnavailableDate(id) { db.collection('unavailableDays').doc(id).delete(); }
+
+  function showConflictModal(conflicts) {
+    const conflictList = document.getElementById('conflictList');
+    conflictList.innerHTML = '';
+    conflicts.forEach(booking => {
+      conflictList.innerHTML += `<div style="padding:12px;margin-bottom:12px;border:1px solid var(--border);border-radius:8px;background:var(--surface3);">
+        <p style="margin:4px 0;font-size:13px;color:var(--text-mid);"><strong style="color:var(--text);">Name:</strong> ${booking.name || "N/A"}</p>
+        <p style="margin:4px 0;font-size:13px;color:var(--text-mid);"><strong style="color:var(--text);">Phone:</strong> ${booking.phone || "N/A"}</p>
+        <p style="margin:4px 0;font-size:13px;color:var(--text-mid);"><strong style="color:var(--text);">Date:</strong> ${booking.date} at ${booking.time || "N/A"}</p>
+        <button onclick="goToReservationsAndHighlight('${booking.id}')" style="margin-top:8px;background:var(--teal);color:#0D1F22;border:none;padding:6px 14px;border-radius:50px;cursor:pointer;font-weight:800;margin-bottom:0;font-size:11px;letter-spacing:1px;">Go to Reservation</button>
+      </div>`;
+    });
+    document.getElementById('conflictModal').style.display = 'flex';
+  }
+
+  function goToReservationsAndHighlight(bookingId) {
+    closeConflictModal(); showSection('reservationsPage');
+    setTimeout(() => {
+      const targetCard = document.querySelector(`[data-id="${bookingId}"]`);
+      if (targetCard) {
+        document.querySelectorAll(".highlighted").forEach(el => el.classList.remove("highlighted"));
+        targetCard.classList.add("highlighted"); targetCard.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(() => targetCard.classList.remove("highlighted"), 6000);
+      }
+    }, 500);
+  }
+
+  function closeConflictModal() { document.getElementById('conflictModal').style.display = 'none'; }
+
+  function showToast(message, success = true) {
+    const toast = document.getElementById("toast");
+    toast.innerText = message;
+    toast.style.backgroundColor = success ? "#0ABFBC" : "#FF6B6B";
+    toast.style.color = success ? "#0D1F22" : "#fff";
+    toast.style.visibility = "visible"; toast.style.opacity = "1"; toast.style.bottom = "50px";
+    setTimeout(() => { toast.style.opacity = "0"; toast.style.bottom = "30px"; setTimeout(() => { toast.style.visibility = "hidden"; }, 500); }, 3000);
+  }
+
+  const ADMIN_UID = "HQ3kde57OWSOnyUOADzZIltvy4z2";
+
+  (function () {
+    const overlay = document.getElementById('accessOverlay');
+    const status  = document.getElementById('accessStatus');
+    const content = document.getElementById('dashboardContent');
+    let resolved = false;
+
+    function showOverlayError(msg) {
+      if (resolved) return; resolved = true;
+      status.textContent = msg; status.style.color = '#F5E6C8';
+      if (!document.getElementById('overlayRetryBtn')) {
+        const btn = document.createElement('button');
+        btn.id = 'overlayRetryBtn'; btn.textContent = 'BACK TO SIGN-IN';
+        btn.style.cssText = "margin-top:18px;padding:10px 22px;background:transparent;color:#0ABFBC;border:1px solid #0ABFBC;font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:3px;font-size:12px;cursor:pointer;text-transform:uppercase;border-radius:50px;";
+        btn.onclick = () => { window.location.href = 'index.html'; };
+        overlay.appendChild(btn);
+      }
+    }
+
+    const watchdog = setTimeout(() => {
+      if (!resolved) showOverlayError('Sign-in session not detected. Please sign in again.');
+    }, 6000);
+
+    try {
+      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(err => console.warn('[Auth] setPersistence failed:', err));
+      firebase.auth().onAuthStateChanged(user => {
+        clearTimeout(watchdog);
+        if (!user) { resolved = true; window.location.replace('index.html'); return; }
+        if (user.uid !== ADMIN_UID) {
+          resolved = true;
+          firebase.auth().signOut().finally(() => { window.location.replace('index.html'); });
+          return;
+        }
+        resolved = true;
+        status.textContent = 'ACCESS GRANTED'; status.style.color = '#4ade80';
+        setTimeout(() => {
+          overlay.style.transition = 'opacity 0.4s'; overlay.style.opacity = '0';
+          setTimeout(() => { overlay.style.display = 'none'; content.style.display = 'block'; }, 400);
+        }, 600);
+        try { loadGallery(); } catch (e) { console.error('loadGallery:', e); }
+        try { showSection('reservationsPage'); } catch (e) { console.error('showSection:', e); }
+        try { loadReservations(); } catch (e) { console.error('loadReservations:', e); }
+        try { loadUnavailableDates(); } catch (e) { console.error('loadUnavailableDates:', e); }
+      }, err => { clearTimeout(watchdog); showOverlayError('Auth error: ' + (err.message || err.code || 'unknown')); });
+    } catch (err) { clearTimeout(watchdog); showOverlayError('Setup error: ' + (err.message || err)); }
+  })();
+  </script>
+
+</body>
+</html>
