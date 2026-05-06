@@ -883,11 +883,15 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
   gap: 8px; margin-top: 6px;
 }
 .service-check-item {
-  display: flex; align-items: center; gap: 8px;
-  padding: 9px 10px; border-radius: 8px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  padding: 10px 10px; border-radius: 8px;
   border: 1.5px solid rgba(10,191,188,0.18);
   cursor: pointer; transition: all 0.18s ease;
   background: rgba(10,191,188,0.03);
+  position: relative;
+}
+.service-check-item .check-box {
+  position: absolute; top: 8px; right: 8px;
 }
 .service-check-item:hover { border-color: var(--teal); background: rgba(10,191,188,0.07); }
 .service-check-item input[type="checkbox"] { display: none; }
@@ -905,7 +909,12 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
 .service-check-item.car-item:hover { border-color: var(--coral); background: rgba(255,107,107,0.06); }
 .service-check-item.car-item.checked { border-color: var(--coral); background: rgba(255,107,107,0.08); }
 .service-check-item.car-item.checked .check-box { background: var(--coral); border-color: var(--coral); }
-.service-check-label { font-size: 12px; color: var(--text-mid); font-family: 'DM Sans', sans-serif; line-height: 1.2; }
+.service-check-label { font-size: 12px; color: var(--text-mid); font-family: 'DM Sans', sans-serif; line-height: 1.2; padding-right: 20px; }
+.service-check-price {
+  font-size: 11px; font-weight: 700; color: var(--teal);
+  font-family: 'Space Grotesk', sans-serif; letter-spacing: 0.5px;
+}
+.service-check-item.car-item .service-check-price { color: var(--coral); }
 
 /* ========================= BOOKING INFO CARD ========================= */
 .booking-rules-card {
@@ -1222,37 +1231,45 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
     <div id="homeServicesWrap">
       <label>What would you like cleaned? <span style="color:var(--text-dim);font-weight:400;font-size:9px;">(Select all that apply)</span></label>
       <div class="service-check-grid" id="homeServiceGrid">
-        <div class="service-check-item" onclick="toggleCheck(this)">
+        <div class="service-check-item" data-price="6000" onclick="toggleCheck(this)">
           <div class="check-box">✓</div>
           <span class="service-check-label">🛏 Mattress</span>
+          <span class="service-check-price">from $6,000</span>
         </div>
-        <div class="service-check-item" onclick="toggleCheck(this)">
+        <div class="service-check-item" data-price="5000" onclick="toggleCheck(this)">
           <div class="check-box">✓</div>
           <span class="service-check-label">🪑 Carpet / Rug</span>
+          <span class="service-check-price">from $5,000</span>
         </div>
-        <div class="service-check-item" onclick="toggleCheck(this)">
+        <div class="service-check-item" data-price="7500" onclick="toggleCheck(this)">
           <div class="check-box">✓</div>
           <span class="service-check-label">🛋 Sofa / Couch</span>
+          <span class="service-check-price">from $7,500</span>
         </div>
-        <div class="service-check-item" onclick="toggleCheck(this)">
+        <div class="service-check-item" data-price="5000" onclick="toggleCheck(this)">
           <div class="check-box">✓</div>
           <span class="service-check-label">🪑 Chairs / Ottoman</span>
+          <span class="service-check-price">from $5,000</span>
         </div>
-        <div class="service-check-item" onclick="toggleCheck(this)">
+        <div class="service-check-item" data-price="6500" onclick="toggleCheck(this)">
           <div class="check-box">✓</div>
           <span class="service-check-label">🚿 Bathroom Tiles</span>
+          <span class="service-check-price">from $6,500</span>
         </div>
-        <div class="service-check-item" onclick="toggleCheck(this)">
+        <div class="service-check-item" data-price="7000" onclick="toggleCheck(this)">
           <div class="check-box">✓</div>
           <span class="service-check-label">🍳 Kitchen Surfaces</span>
+          <span class="service-check-price">from $7,000</span>
         </div>
-        <div class="service-check-item" onclick="toggleCheck(this)">
+        <div class="service-check-item" data-price="4500" onclick="toggleCheck(this)">
           <div class="check-box">✓</div>
           <span class="service-check-label">🪟 Curtains / Drapes</span>
+          <span class="service-check-price">from $4,500</span>
         </div>
-        <div class="service-check-item" onclick="toggleCheck(this)">
+        <div class="service-check-item" data-price="20000" onclick="toggleCheck(this)">
           <div class="check-box">✓</div>
           <span class="service-check-label">✨ General Deep Clean</span>
+          <span class="service-check-price">from $20,000</span>
         </div>
       </div>
     </div>
@@ -1269,37 +1286,45 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
 
       <label>What would you like cleaned? <span style="color:var(--text-dim);font-weight:400;font-size:9px;">(Select all that apply)</span></label>
       <div class="service-check-grid" id="carServiceGrid">
-        <div class="service-check-item car-item" onclick="toggleCheck(this)">
+        <div class="service-check-item car-item" data-price="0" onclick="toggleCheck(this)">
           <div class="check-box">✓</div>
           <span class="service-check-label">💺 Seats / Upholstery</span>
+          <span class="service-check-price">incl. in pkg</span>
         </div>
-        <div class="service-check-item car-item" onclick="toggleCheck(this)">
+        <div class="service-check-item car-item" data-price="0" onclick="toggleCheck(this)">
           <div class="check-box">✓</div>
           <span class="service-check-label">🪞 Dashboard / Interior</span>
+          <span class="service-check-price">incl. in pkg</span>
         </div>
-        <div class="service-check-item car-item" onclick="toggleCheck(this)">
+        <div class="service-check-item car-item" data-price="0" onclick="toggleCheck(this)">
           <div class="check-box">✓</div>
           <span class="service-check-label">🧼 Full Interior Steam</span>
+          <span class="service-check-price">incl. in pkg</span>
         </div>
-        <div class="service-check-item car-item" onclick="toggleCheck(this)">
+        <div class="service-check-item car-item" data-price="0" onclick="toggleCheck(this)">
           <div class="check-box">✓</div>
           <span class="service-check-label">🪣 Carpet / Floor Mats</span>
+          <span class="service-check-price">incl. in pkg</span>
         </div>
-        <div class="service-check-item car-item" onclick="toggleCheck(this)">
+        <div class="service-check-item car-item" data-price="0" onclick="toggleCheck(this)">
           <div class="check-box">✓</div>
           <span class="service-check-label">🚗 Full Exterior Wash</span>
+          <span class="service-check-price">incl. in pkg</span>
         </div>
-        <div class="service-check-item car-item" onclick="toggleCheck(this)">
+        <div class="service-check-item car-item" data-price="3500" onclick="toggleCheck(this)">
           <div class="check-box">✓</div>
           <span class="service-check-label">⚙️ Engine Bay Clean</span>
+          <span class="service-check-price">+$3,500</span>
         </div>
-        <div class="service-check-item car-item" onclick="toggleCheck(this)">
+        <div class="service-check-item car-item" data-price="3500" onclick="toggleCheck(this)">
           <div class="check-box">✓</div>
           <span class="service-check-label">🔦 Headlight Restore</span>
+          <span class="service-check-price">+$3,500</span>
         </div>
-        <div class="service-check-item car-item" onclick="toggleCheck(this)">
+        <div class="service-check-item car-item" data-price="2500" onclick="toggleCheck(this)">
           <div class="check-box">✓</div>
           <span class="service-check-label">💨 Odour Elimination</span>
+          <span class="service-check-price">+$2,500</span>
         </div>
       </div>
 
@@ -1355,8 +1380,45 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
     <label for="phone">Phone Number</label>
     <input id="phone" type="tel" inputmode="numeric" maxlength="14" placeholder="(876) 123-4567" required/>
 
-    <label for="customerLocation">Your Location / Address</label>
-    <input id="customerLocation" required type="text" placeholder="e.g. Frome, Westmoreland or your street address"/>
+    <label for="locationArea">Your Area <span style="color:var(--text-dim);font-weight:400;font-size:9px;">(travel fee added to total)</span></label>
+    <select id="locationArea" required onchange="onLocationChange()">
+      <option value="">— Select your area —</option>
+      <optgroup label="📍 Westmoreland — No Travel Fee">
+        <option value="Savannah La Mar|0">Savannah La Mar — No travel fee</option>
+        <option value="Frome|0">Frome — No travel fee</option>
+        <option value="Deans Valley|0">Deans Valley — No travel fee</option>
+        <option value="Whithorn|0">Whithorn — No travel fee</option>
+        <option value="Little London|0">Little London — No travel fee</option>
+        <option value="Petersfield|0">Petersfield — No travel fee</option>
+        <option value="Grange Hill|0">Grange Hill — No travel fee</option>
+        <option value="Negril|3000">Negril — from $3,000+</option>
+      </optgroup>
+      <optgroup label="📍 Hanover — from $3,000+">
+        <option value="Lucea|3000">Lucea — from $3,000+</option>
+        <option value="Green Island|3000">Green Island — from $3,000+</option>
+        <option value="Sandy Bay|3500">Sandy Bay — from $3,500+</option>
+      </optgroup>
+      <optgroup label="📍 St. Elizabeth — from $4,000+">
+        <option value="Black River|4000">Black River — from $4,000+</option>
+        <option value="Santa Cruz|5000">Santa Cruz — from $5,000+</option>
+        <option value="Junction|5500">Junction — from $5,500+</option>
+      </optgroup>
+      <optgroup label="📍 St. James — from $5,000+">
+        <option value="Montego Bay|5000">Montego Bay — from $5,000+</option>
+        <option value="Anchovy|4500">Anchovy — from $4,500+</option>
+        <option value="Ironshore|5000">Ironshore — from $5,000+</option>
+      </optgroup>
+      <optgroup label="📍 Manchester — from $6,000+">
+        <option value="Mandeville|6000">Mandeville — from $6,000+</option>
+        <option value="Christiana|6500">Christiana — from $6,500+</option>
+      </optgroup>
+      <optgroup label="📍 Other">
+        <option value="Other|0">Other — contact us for quote</option>
+      </optgroup>
+    </select>
+
+    <label for="customerLocation">Street Address / Specific Location</label>
+    <input id="customerLocation" required type="text" placeholder="e.g. 12 Main Street, Frome"/>
 
     <label for="date">Preferred Date</label>
     <input id="date" min="" onchange="loadAvailableSlots()" required type="date"/>
@@ -1370,6 +1432,21 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
     <textarea id="notes" placeholder="Any special instructions, access details, or extra info…" style="min-height:80px; resize:vertical;"></textarea>
 
     <p id="estimateTimeMessage" style="display:none;"></p>
+
+    <!-- ===== PRICE SUMMARY CARD ===== -->
+    <div id="priceSummaryCard" style="display:none; margin:16px 0; border-radius:12px; overflow:hidden; border:1px solid rgba(10,191,188,0.3); background:var(--surface2);">
+      <div style="background:rgba(10,191,188,0.1); padding:10px 16px; border-bottom:1px solid rgba(10,191,188,0.15);">
+        <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:10px; letter-spacing:3px; color:var(--teal); text-transform:uppercase;">💰 Estimated Total</span>
+      </div>
+      <div style="padding:14px 16px;" id="priceBreakdown"></div>
+      <div style="padding:10px 16px 14px; border-top:1px solid rgba(10,191,188,0.12); display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:12px; color:var(--text-mid); letter-spacing:1px; text-transform:uppercase;">TOTAL</span>
+        <span id="priceTotalDisplay" style="font-family:'Bebas Neue',sans-serif; font-size:26px; color:var(--teal); letter-spacing:2px;">$0</span>
+      </div>
+      <div style="padding:0 16px 12px;">
+        <p style="font-size:10px; color:var(--text-dim); font-style:italic; margin:0;">* Estimates based on standard pricing. Final price confirmed on arrival.</p>
+      </div>
+    </div>
 
     <button type="submit">BOOK NOW 🫧</button>
   </form>
@@ -1857,14 +1934,36 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
       carBtn.classList.add('active');
       homeBtn.classList.remove('active');
     }
+    updatePriceCard();
   }
+
+  // ========== PRICING MAP ==========
+  const CAR_PACKAGE_PRICES = {
+    'adult-Interior Steam Clean': 9000,
+    'adult-Full Interior Detail': 15000,
+    'adult-Express Wash': 4500,
+    'adult-Full Detail': 18000,
+    'adult-Ceramic Coating': 35000,
+    'adult-Other': 0,
+    'teen-Interior Steam Clean': 12000,
+    'teen-Full Interior Detail': 18000,
+    'teen-Express Wash': 5500,
+    'teen-Full Detail': 22000,
+    'teen-Ceramic Coating': 45000,
+    'teen-Other': 0,
+    'kids-Interior Steam Clean': 15000,
+    'kids-Full Interior Detail': 22000,
+    'kids-Express Wash': 6500,
+    'kids-Full Detail': 28000,
+    'kids-Ceramic Coating': 55000,
+    'kids-Other': 0,
+  };
 
   // ========== CHECKBOX TOGGLE ==========
   function toggleCheck(el) {
     el.classList.toggle('checked');
-    const cb = el.querySelector('input[type="checkbox"]');
-    if (cb) cb.checked = !cb.checked;
     updateSelectionSummary();
+    updatePriceCard();
   }
 
   function updateSelectionSummary() {
@@ -1879,6 +1978,87 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
     }
   }
 
+  // ========== PRICE CARD ==========
+  function updatePriceCard() {
+    const card = document.getElementById('priceSummaryCard');
+    const breakdown = document.getElementById('priceBreakdown');
+    const totalEl = document.getElementById('priceTotalDisplay');
+
+    const locationSel = document.getElementById('locationArea');
+    const locationVal = locationSel ? locationSel.value : '';
+    const travelFee = locationVal ? parseInt(locationVal.split('|')[1] || 0) : 0;
+
+    let lines = [];
+    let serviceTotal = 0;
+
+    if (currentServiceType === 'home') {
+      const checked = document.querySelectorAll('.service-check-item.checked');
+      checked.forEach(el => {
+        const label = el.querySelector('.service-check-label').textContent.trim();
+        const price = parseInt(el.dataset.price || 0);
+        serviceTotal += price;
+        lines.push({ label, price });
+      });
+    } else {
+      // Car: base package price + add-on prices
+      const ageVal = document.getElementById('ageGroup').value;
+      let pkgVal = '';
+      if (ageVal === 'adult') pkgVal = document.getElementById('adultService').value;
+      if (ageVal === 'teen')  pkgVal = document.getElementById('teenService').value;
+      if (ageVal === 'kids')  pkgVal = document.getElementById('kidsService').value;
+
+      if (pkgVal && CAR_PACKAGE_PRICES[pkgVal] !== undefined) {
+        const pkgPrice = CAR_PACKAGE_PRICES[pkgVal];
+        const pkgName  = pkgVal.split('-').slice(1).join(' ');
+        serviceTotal += pkgPrice;
+        lines.push({ label: pkgName, price: pkgPrice });
+      }
+
+      // Add-ons with a price > 0
+      const checked = document.querySelectorAll('.service-check-item.checked');
+      checked.forEach(el => {
+        const price = parseInt(el.dataset.price || 0);
+        if (price > 0) {
+          const label = el.querySelector('.service-check-label').textContent.trim();
+          serviceTotal += price;
+          lines.push({ label, price });
+        }
+      });
+    }
+
+    if (lines.length === 0 && travelFee === 0) {
+      card.style.display = 'none';
+      return;
+    }
+
+    card.style.display = 'block';
+
+    const fmt = n => 'from $' + n.toLocaleString() + '+';
+    let html = '';
+    lines.forEach(l => {
+      html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+        <span style="font-size:12px;color:var(--text-mid);">${l.label}</span>
+        <span style="font-size:12px;font-weight:700;color:var(--text);font-family:'Space Grotesk',sans-serif;">${fmt(l.price)}</span>
+      </div>`;
+    });
+
+    if (travelFee > 0) {
+      const area = locationVal.split('|')[0];
+      const fmt2 = n => 'from $' + n.toLocaleString() + '+';
+      html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+        <span style="font-size:12px;color:var(--coral);">📍 Travel Fee (${area})</span>
+        <span style="font-size:12px;font-weight:700;color:var(--coral);font-family:'Space Grotesk',sans-serif;">${fmt2(travelFee)}</span>
+      </div>`;
+    }
+
+    breakdown.innerHTML = html;
+    totalEl.textContent = 'from $' + (serviceTotal + travelFee).toLocaleString() + '+';
+  }
+
+  function onLocationChange() {
+    updatePriceCard();
+  }
+
   // ========== CAR TYPE CHANGE ==========
   function onAgeGroupChange() {
     const val = document.getElementById('ageGroup').value;
@@ -1886,6 +2066,7 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
     document.getElementById('teenServiceWrap').style.display  = val === 'teen'  ? 'block' : 'none';
     document.getElementById('kidsServiceWrap').style.display  = val === 'kids'  ? 'block' : 'none';
     loadAvailableSlots();
+    updatePriceCard();
   }
 
   function onServiceChange() {
@@ -1896,6 +2077,7 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
     if (val === 'kids')  svc = document.getElementById('kidsService').value;
     document.getElementById('haircutType').value = svc || 'NONE';
     loadAvailableSlots();
+    updatePriceCard();
   }
 
   // ========== DATE MIN ==========
@@ -1937,36 +2119,53 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
     e.preventDefault();
     const name     = document.getElementById('name').value.trim();
     const phone    = document.getElementById('phone').value.trim();
+    const locationAreaEl = document.getElementById('locationArea');
+    const locationAreaVal = locationAreaEl ? locationAreaEl.value : '';
+    const locationArea = locationAreaVal ? locationAreaVal.split('|')[0] : '';
+    const travelFee = locationAreaVal ? parseInt(locationAreaVal.split('|')[1] || 0) : 0;
     const location = document.getElementById('customerLocation').value.trim();
     const date     = document.getElementById('date').value;
     const time     = document.getElementById('selectedTime').value;
     const notes    = document.getElementById('notes').value.trim();
     const msg      = document.getElementById('bookingMessage');
 
-    if (!name || !phone || !location || !date || !time) {
+    if (!name || !phone || !locationArea || !location || !date || !time) {
       msg.style.color = 'var(--coral)';
       msg.textContent = 'Please fill in all required fields.';
       return;
     }
 
-    // Gather selected services
-    const checkedItems = Array.from(document.querySelectorAll('.service-check-item.checked .service-check-label')).map(el => el.textContent.trim());
-    
+    // Gather selected services + prices
+    const checkedItems = Array.from(document.querySelectorAll('.service-check-item.checked')).map(el => ({
+      label: el.querySelector('.service-check-label').textContent.trim(),
+      price: parseInt(el.dataset.price || 0)
+    }));
+
     // Get car package if applicable
     let carPackage = '';
+    let carPackagePrice = 0;
     if (currentServiceType === 'car') {
       const ageVal = document.getElementById('ageGroup').value;
       if (ageVal === 'adult') carPackage = document.getElementById('adultService').value;
       if (ageVal === 'teen')  carPackage = document.getElementById('teenService').value;
       if (ageVal === 'kids')  carPackage = document.getElementById('kidsService').value;
+      if (carPackage) carPackagePrice = CAR_PACKAGE_PRICES[carPackage] || 0;
     }
 
     const serviceType = currentServiceType === 'home' ? 'HOME CLEANING' : 'CAR CLEANING';
-    const serviceDesc = checkedItems.length > 0 ? checkedItems.join(', ') : (carPackage || 'General Service');
+    const serviceDesc = checkedItems.map(i => i.label).join(', ') || (carPackage ? carPackage.split('-').slice(1).join(' ') : 'General Service');
+    const serviceSubtotal = currentServiceType === 'home'
+      ? checkedItems.reduce((s, i) => s + i.price, 0)
+      : carPackagePrice + checkedItems.filter(i => i.price > 0).reduce((s, i) => s + i.price, 0);
+    const estimatedTotal = serviceSubtotal + travelFee;
+    const fmt = n => '$' + n.toLocaleString();
 
     const bookingData = {
       name, phone,
+      locationArea,
       location,
+      travelFee,
+      estimatedTotal,
       serviceType,
       services: serviceDesc,
       carPackage: carPackage || '',
@@ -1986,8 +2185,11 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
             <strong style="color:var(--teal);">${name}</strong>, your <strong>${serviceType}</strong> appointment is booked!
           </p>
           <p style="font-size:14px; color:var(--text-dim);">📅 <strong>${date}</strong> at <strong>${time}</strong></p>
-          <p style="font-size:13px; color:var(--text-dim); margin-top:6px;">📍 ${location}</p>
+          <p style="font-size:13px; color:var(--text-dim); margin-top:6px;">📍 ${locationArea} — ${location}</p>
           <p style="font-size:13px; color:var(--text-mid); margin-top:10px;">Services: ${serviceDesc}</p>
+          ${travelFee > 0 ? `<p style="font-size:12px;color:var(--coral);margin-top:6px;">Travel fee: ${fmt(travelFee)}</p>` : ''}
+          <p style="font-size:18px; color:var(--teal); font-family:'Bebas Neue',sans-serif; letter-spacing:2px; margin-top:14px;">Estimated Total: ${fmt(estimatedTotal)}</p>
+          <p style="font-size:12px; color:var(--text-dim); margin-top:4px; font-style:italic;">Final price confirmed on arrival.</p>
           <p style="font-size:12px; color:var(--teal); margin-top:14px; font-style:italic;">We'll confirm with you shortly. Thank you!</p>
         </div>`;
       document.getElementById('bookingModal').style.display = 'flex';
@@ -1995,6 +2197,7 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
       e.target.reset();
       document.querySelectorAll('.service-check-item.checked').forEach(el => el.classList.remove('checked'));
       updateSelectionSummary();
+      updatePriceCard();
       selectServiceType('home');
     } catch(err) {
       msg.style.color = 'var(--coral)';
