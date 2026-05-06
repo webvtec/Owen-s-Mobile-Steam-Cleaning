@@ -1974,10 +1974,10 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
         return;
       }
 
-      // Sort client-side: honour 'order' field if present, otherwise append at end
+      // Sort client-side by 'sortOrder' — the field the dashboard actually saves
       galleryAllItems = snap.docs.map(d => d.data()).sort((a,b) => {
-        const ao = (a.order != null) ? Number(a.order) : 9999;
-        const bo = (b.order != null) ? Number(b.order) : 9999;
+        const ao = (a.sortOrder != null) ? Number(a.sortOrder) : 9999999;
+        const bo = (b.sortOrder != null) ? Number(b.sortOrder) : 9999999;
         return ao - bo;
       });
 
