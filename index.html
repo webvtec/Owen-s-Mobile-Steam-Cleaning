@@ -1956,7 +1956,8 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
     container.innerHTML = shimHTML;
 
     try {
-      const snap = await db.collection('gallery').orderBy('order', 'asc').get();
+      // Fetch ALL docs — no orderBy so docs missing the 'order' field are never excluded
+      const snap = await db.collection('gallery').get();
 
       if (snap.empty) {
         container.innerHTML = `
@@ -1973,7 +1974,12 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
         return;
       }
 
-      galleryAllItems = snap.docs.map(d => d.data());
+      // Sort client-side: honour 'order' field if present, otherwise append at end
+      galleryAllItems = snap.docs.map(d => d.data()).sort((a,b) => {
+        const ao = (a.order != null) ? Number(a.order) : 9999;
+        const bo = (b.order != null) ? Number(b.order) : 9999;
+        return ao - bo;
+      });
 
       // Build unique category list
       const cats = ['All', ...new Set(galleryAllItems.map(i => i.category || 'General'))];
@@ -1982,8 +1988,10 @@ form button { animation: btnPulse 3.5s ease-in-out infinite; }
     } catch(e) {
       container.innerHTML = `
         <div class="gallery-empty">
-          <div class="ge-icon">🫧</div>
-          <p>Gallery coming soon — check back shortly!</p>
+          <div class="ge-icon">⚠️</div>
+          <p style="color:var(--coral);font-size:13px;line-height:1.6;">
+            Could not load gallery.<br><span style="opacity:0.7">${e.message}</span>
+          </p>
         </div>`;
     }
   }
